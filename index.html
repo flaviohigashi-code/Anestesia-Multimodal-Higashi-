@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Protocolo Esquema Master by Higashi</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --blue: #58a6ff;
+            --green: #39d353;
+            --yellow: #fbbf24;
+            --red: #f85149;
+            --purple: #d2a8ff;
+            --orange: #ff9a4b;
+            --border: #30363d;
+        }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #c9d1d9; padding: 10px; margin: 0; font-size: 16px; }
+        .container { max-width: 100%; background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin: auto; box-sizing: border-box; }
+        h2 { color: var(--green); text-align: center; text-transform: uppercase; margin: 10px 0 5px 0; font-size: 1.3em; letter-spacing: 1px; }
+        .sub { text-align: center; color: #8b949e; font-size: 12px; margin-bottom: 20px; text-transform: uppercase; }
+        .section { background: var(--bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .grid-inputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .weight-results { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; display: none; }
+        .card-p { background: #1c2128; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid var(--green); }
+        .card-p h4 { margin: 0; font-size: 11px; color: var(--green); text-transform: uppercase; }
+        .card-p span { font-size: 24px; font-weight: bold; color: #fff; }
+        label { font-size: 11px; color: #8b949e; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px; margin-top: 8px; }
+        input, select { width: 100%; padding: 12px; background: #161b22; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 18px; border: none; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 10px; font-size: 16px; text-transform: uppercase; }
+        .btn-green { background: var(--green); color: #0d1117; }
+        .strategy-box { display: none; flex-direction: column; gap: 5px; margin-top: 15px; padding: 15px; background: #21262d; border-radius: 10px; }
+        .dose-manual-box { background: rgba(248, 81, 73, 0.1); border: 1px solid var(--red); padding: 12px; border-radius: 8px; margin-top: 10px; display: none; }
+        .info-box { background: rgba(88, 166, 255, 0.1); border: 1px solid var(--blue); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
+        .orange-box { background: rgba(255, 154, 75, 0.1); border: 1px solid var(--orange); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
+        .purple-box { background: rgba(210, 168, 255, 0.1); border: 1px solid var(--purple); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
+        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; min-width: 480px; }
+        th { background: #21262d; color: var(--green); padding: 10px 5px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
+        td { padding: 12px 5px; border: 1px solid var(--border); text-align: center; font-family: 'Courier New', monospace; font-size: 14px; }
+        .highlight-ml { color: var(--green); font-weight: bold; font-size: 1.3em; }
+        .highlight-cam { color: var(--purple); font-weight: bold; font-size: 1.3em; }
+        .ce-val { color: var(--yellow); font-weight: bold; }
+        .bordao { text-align: center; font-size: 2.2em; font-weight: 900; color: var(--green); margin-top: 30px; text-shadow: 0 0 15px rgba(57, 211, 83, 0.5); display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Protocolo Esquema Master</h2>
+    <div class="sub">Desenvolvido por Dr. Higashi</div>
+    
+    <div class="section">
+        <label>1. Perfil do Paciente</label>
+        <div class="grid-inputs">
+            <div><label>Peso Real (kg)</label><input type="number" id="p" value="70" inputmode="decimal"></div>
+            <div><label>Altura (cm)</label><input type="number" id="h" value="170" inputmode="decimal"></div>
+            <div><label>Idade (anos)</label><input type="number" id="i" value="40" inputmode="decimal"></div>
+            <div><label>Sexo</label><select id="s"><option value="M">Masc</option><option value="F">Fem</option></select></div>
+        </div>
+        <button class="btn btn-green" onclick="calcularPesos()">Analisar e Planejar a Multimodal</button>
+
+        <div class="weight-results" id="weightResults">
+            <div class="card-p"><h4>Massa Magra Ativa / Peso Ajustado</h4><span id="resSugerido">0</span> kg</div>
+        </div>
+    </div>
+
+    <div class="strategy-box" id="strategyBox">
+        <label>2. Configurações da Estratégia</label>
+        
+        <div class="grid-inputs">
+            <div>
+                <label>Duração Prevista</label>
+                <select id="duracaoCirurgia" onchange="atualizarDinamica()">
+                    <option value="curta">Até 2 horas</option>
+                    <option value="longa">Maior que 2 horas</option>
+                </select>
+            </div>
+            <div>
+                <label>Via de Manutenção</label>
+                <select id="viaManutencao" onchange="atualizarDinamica()">
+                    <option value="propofol">TIVA (Propofol Eleveld Ce)</option>
+                    <option value="sevoflurano">PIVA (Sevoflurano CAM)</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="manualBox" class="dose-manual-box" style="display: block;">
+            <label style="color: var(--red); font-weight: bold;">Indução Estruturada (Esquema Mode):</label>
+            <div id="calculoDosesManual" style="margin-top: 5px;"></div>
+        </div>
+
+        <div id="adjuvantesTempoBox" class="purple-box">
+            <b style="color: var(--purple);">Manejo de Adjuvantes do Esquema:</b><br>
+            <span id="textoAdjuvantesTempo"></span>
+        </div>
+
+        <div id="opioideLongaBox" class="orange-box">
+            <b style="color: var(--orange);">Opioide de Longa Duração (Início):</b><br>
+            <span id="calculoOpioideLonga"></span>
+        </div>
+
+        <div class="info-box">
+            <b style="color: var(--blue);">Coadjuvantes Multimodais (Fazer tudo no início):</b><br>
+            • <b>Dipirona:</b> 2g EV<br>
+            • <b>Toragesic (Cetorolaco):</b> 30mg EV<br>
+            • <b>Dexametasona:</b> 4mg a 8mg EV<br>
+            • <b>Ondansetrona:</b> 4mg EV
+        </div>
+
+        <button class="btn btn-green" onclick="gerarGrade()">Gerar Plano de Manutenção</button>
+    </div>
+
+    <div id="resFinal" class="table-container"></div>
+    <div id="bordaoFinal" class="bordao">EXCELENTE!</div>
+</div>
+
+<script>
+function calcularPesos() {
+    let p = parseFloat(document.getElementById('p').value);
+    let h = parseFloat(document.getElementById('h').value);
+    let i = parseFloat(document.getElementById('i').value);
+    let s = document.getElementById('s').value;
+
+    let imc = p / Math.pow(h/100, 2);
+    let pIdeal = (s === 'M') ? 50 + 0.9 * (h - 152.4) : 45.5 + 0.9 * (h - 152.4);
+    
+    let pSugerido;
+    if (i < 12) pSugerido = p;
+    else if (imc > 30) pSugerido = pIdeal + 0.4 * (p - pIdeal);
+    else pSugerido = p;
+
+    document.getElementById('resSugerido').innerText = pSugerido.toFixed(1);
+    
+    document.getElementById('weightResults').style.display = 'grid';
+    document.getElementById('strategyBox').style.display = 'flex';
+    atualizarDinamica();
+}
+
+function atualizarDinamica() {
+    let pB = parseFloat(document.getElementById('resSugerido').innerText);
+    let idade = parseFloat(document.getElementById('i').value);
+    let duracao = document.getElementById('duracaoCirurgia').value;
+    let via = document.getElementById('viaManutencao').value;
+
+    let fatorIdadeEleveld = idade > 45 ? Math.exp(-0.005 * (idade - 45)) : 1.0;
+
+    // 1. Indução Otimizada
+    let mkgP = idade > 70 ? 1.0 : 1.5; 
+    let prop = pB * mkgP;
+    let rocu = pB * 0.6;
+    
+    let ceInducaoRemi = 5.5 * fatorIdadeEleveld; 
+    let alo = Math.pow(pB / 70, 0.75);
+    let vazaoAtaqueRemi = ((ceInducaoRemi * 0.045) * 70 * alo * 60) / 40;
+
+    // Mini dose unificada para qualquer indução (Seringa de Insulina)
+    let unidadesUnificadas = (pB / 3).toFixed(0);
+
+    // Texto descritivo de Alvos e Modelos de acordo com a via selecionada
+    let orientacaoModelos = "";
+    if (via === 'propofol') {
+        orientacaoModelos = `• <b>Bomba Propofol TCI:</b> Configurar modelo <b>Schnider (Modo Efeito)</b> utilizando o Peso Ajustado (<b style="color:var(--green);">${pB.toFixed(1)} kg</b>).<br>` +
+                             `• <b>Propofol (1%) Bolus Manual:</b> ${(prop/10).toFixed(1)} ml (${prop.toFixed(0)} mg) se necessário complementar.<br>`;
+    } else {
+        orientacaoModelos = `• <b>Propofol (1%) p/ Indução:</b> ${(prop/10).toFixed(1)} ml (${prop.toFixed(0)} mg) em bólus manual lento.<br>`;
+    }
+
+    document.getElementById('calculoDosesManual').innerHTML = 
+        orientacaoModelos +
+        `• <b>Rocurônio:</b> ${(rocu/10).toFixed(1)} ml (${rocu.toFixed(0)} mg)<br>` +
+        `• <b>Mini Dose de Proteção (Indução):</b> Aspire <b>${unidadesUnificadas} UI</b> de Ketamin + <b>${unidadesUnificadas} UI</b> de Precedex na mesma seringa de Insulina de 100 UI.<br>` +
+        `<span style="color: var(--blue);">• <b>Bomba Remifentanil TCI:</b> Configurar modelo <b>Minto (Modo Efeito)</b> utilizando o Peso Ajustado (<b style="color:var(--green);">${pB.toFixed(1)} kg</b>).<br>` +
+        `• <b>Remifentanil (Alvo de Ataque):</b> Programar Alvo Ce para <b style="color:var(--yellow); font-size:1.1em;">${ceInducaoRemi.toFixed(1)} ng/ml</b> ` +
+        `(Vazão Agilia aprox. <b>${vazaoAtaqueRemi.toFixed(1)} ml/h</b>).<br>` +
+        `<b style="color: var(--red);">[ATENÇÃO] Baixar o alvo do Remifentanil IMEDIATAMENTE após a intubação para garantir a estabilidade hemodinâmica.</b></span>`;
+
+    // 2. Condicionamento de Manutenção de Adjuvantes por Tempo
+    if (duracao === 'curta') {
+        document.getElementById('textoAdjuvantesTempo').innerHTML = 
+            `<b>Plano p/ Cirurgia &le; 2h:</b><br>` +
+            `• A mini dose de Keta+Dex administrada na indução é suficiente para a cobertura de curta duração. Sem bombas adicionais de adjuvantes na manutenção.`;
+    } else {
+        let vazaoLidoDex = (pB / 4).toFixed(1);
+        document.getElementById('textoAdjuvantesTempo').innerHTML = 
+            `<b>Plano p/ Cirurgia &gt; 2h:</b><br>` +
+            `• Além da mini dose protetora inicial (Keta+Dex), iniciar **Infusão Contínua de Lidocaína + Dexmedetomidina** na velocidade de <b style="color:var(--green); font-size:1.1em;">${vazaoLidoDex} ml/h</b> ($Peso / 4$).<br>` +
+            `<b style="color:var(--orange);">[MANEJO] Desligar esta infusão na metade do tempo previsto da cirurgia</b> ou transicionar para metade da velocidade após o meio do procedimento.`;
+    }
+
+    // 3. Cálculo Fixo da Metadona no Início
+    let doseMin = (pB * 0.05).toFixed(1);
+    let doseMax = (pB * 0.08).toFixed(1);
+    document.getElementById('calculoOpioideLonga').innerHTML = 
+        `Metadona: <b>${doseMin} a ${doseMax} mg EV</b>.<br>` +
+        `<span style="color: var(--green); font-weight: bold;">[MOMENTO] Fazer obrigatoriamente no INÍCIO da indução</span> para latência ideal pós-operatória.`;
+}
+
+function gerarGrade() {
+    let pB = parseFloat(document.getElementById('resSugerido').innerText);
+    let i = parseFloat(document.getElementById('i').value);
+    let via = document.getElementById('viaManutencao').value;
+    let duracao = document.getElementById('duracaoCirurgia').value;
+
+    let fatorIdadeEleveld = i > 45 ? Math.exp(-0.005 * (i - 45)) : 1.0;
+    let camBasalSevo = 2.0 * Math.pow(0.96, (i - 40) / 10);
+    if(i < 5) camBasalSevo = 2.5;
+
+    let rP = 0.65; 
+    let rR = 0.55; 
+    let rS = 0.70; 
+
+    let html = "";
+
+    if (via === 'propofol') {
+        let ceBaseP = i > 75 ? 1.6 : (i < 12 ? 3.5 : 2.5);
+        let ceBaseR = i > 75 ? 1.2 : (i < 12 ? 3.8 : 2.8); 
+        let modFim = (duracao === 'longa') ? 0.8 : 1.0; 
+
+        const fasesProp = [
+            { t: "Pós-Intubação (Estabilização)", cp: ceBaseP, cr: ceBaseR },
+            { t: "Estímulo Máximo (Incisão/Pneumo)", cp: ceBaseP * 1.2, cr: ceBaseR * 1.3 },
+            { t: "Manutenção Estável", cp: ceBaseP * 0.9, cr: ceBaseR * 0.9 },
+            { t: "Fechamento / Transição", cp: ceBaseP * 0.7 * modFim, cr: ceBaseR * 0.5 * modFim },
+            { t: "Despertar Programado", cp: ceBaseP * 0.5 * modFim, cr: ceBaseR * 0.3 }
+        ];
+
+        html = `<table>
+                    <tr>
+                        <th rowspan="2">Fase de Manutenção</th>
+                        <th colspan="2">PROPOFOL (Schnider Efeito)</th>
+                        <th colspan="2">REMI (Minto Efeito)</th>
+                    </tr>
+                    <tr>
+                        <th>Alvo Ce</th><th>Agilia Vazão (ml/h)</th>
+                        <th>Alvo Ce</th><th>Agilia Vazão (ml/h)</th>
+                    </tr>`;
+
+        fasesProp.forEach(f => {
+            let alo = Math.pow(pB / 70, 0.75);
+            let mlp = ((f.cp * 22 / 1000) * rP * fatorIdadeEleveld * 1000 * 70 * alo * 60) / 10000;
+            let mlr = ((f.cr * 0.045) * rR * fatorIdadeEleveld * 70 * alo * 60) / 40;
+
+            html += `<tr>
+                <td style="text-align:left; font-weight:bold;">${f.t}</td>
+                <td class="ce-val">${f.cp.toFixed(1)} mcg/ml</td>
+                <td class="highlight-ml">${mlp.toFixed(1)}</td>
+                <td class="ce-val">${f.cr.toFixed(1)} ng/ml</td>
+                <td class="highlight-ml">${mlr.toFixed(1)}</td>
+            </tr>`;
+        });
+
+    } else {
+        let ceBaseR = i > 75 ? 1.0 : (i < 12 ? 3.5 : 2.4);
+        let modFim = (duracao === 'longa') ? 0.75 : 1.0;
+
+        const fasesSevo = [
+            { t: "Pós-Intubação (Estabilização)", cam: 0.8 * rS, cr: ceBaseR },
+            { t: "Estímulo Máximo (Incisão/Pneumo)", cam: 1.1 * rS, cr: ceBaseR * 1.2 },
+            { t: "Manutenção Estável", cam: 0.7 * rS, cr: ceBaseR * 0.9 },
+            { t: "Fechamento (Lavagem rápida)", cam: 0.4 * rS * modFim, cr: ceBaseR * 0.4 * modFim },
+            { t: "Despertar (Gás Expirado p/ Zero)", cam: 0.1, cr: ceBaseR * 0.2 }
+        ];
+
+        html = `<table>
+                    <tr>
+                        <th rowspan="2">Fase de Manutenção</th>
+                        <th colspan="2">SEVOFLURANO (PIVA)</th>
+                        <th colspan="2">REMI (Minto Efeito)</th>
+                    </tr>
+                    <tr>
+                        <th>Fração CAM</th><th>Alvo Expirado (%)</th>
+                        <th>Alvo Ce</th><th>Agilia Vazão (ml/h)</th>
+                    </tr>`;
+
+        fasesSevo.forEach(f => {
+            let alvoPorcentagemSevo = f.cam * camBasalSevo;
+            let alo = Math.pow(pB / 70, 0.75);
+            let mlr = ((f.cr * 0.045) * rR * 1.0 * 70 * alo * 60) / 40;
+
+            html += `<tr>
+                <td style="text-align:left; font-weight:bold;">${f.t}</td>
+                <td class="ce-val">${f.cam.toFixed(2)} CAM</td>
+                <td class="highlight-cam">${alvoPorcentagemSevo.toFixed(1)} %</td>
+                <td class="ce-val">${f.cr.toFixed(1)} ng/ml</td>
+                <td class="highlight-ml">${mlr.toFixed(1)}</td>
+            </tr>`;
+        });
+    }
+
+    document.getElementById('resFinal').innerHTML = html + `</table>`;
+    document.getElementById('bordaoFinal').style.display = 'block';
+    document.getElementById('bordaoFinal').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
