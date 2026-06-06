@@ -74,7 +74,7 @@
                 <label>Duração Prevista</label>
                 <select id="duracaoCirurgia" onchange="atualizarDinamica()">
                     <option value="curta">Até 2 horas</option>
-                    <option value="longa">Maior que 2 horas</option>
+                    <option value="longa">Maior que 2 horas (Bariátrica / Grandes Portes)</option>
                 </select>
             </div>
             <div>
@@ -92,21 +92,23 @@
         </div>
 
         <div id="adjuvantesTempoBox" class="purple-box">
-            <b style="color: var(--purple);">Manejo de Adjuvantes do Esquema:</b><br>
+            <b style="color: var(--purple);">Manejo de Adjuvantes do Esquema (Lido + Dex):</b><br>
             <span id="textoAdjuvantesTempo"></span>
         </div>
 
         <div id="opioideLongaBox" class="orange-box">
-            <b style="color: var(--orange);">Opioide de Longa Duração (Início):</b><br>
+            <b style="color: var(--orange);">Opioide de Longa Duração (Preemptivo):</b><br>
             <span id="calculoOpioideLonga"></span>
         </div>
 
         <div class="info-box">
-            <b style="color: var(--blue);">Coadjuvantes Multimodais (Fazer tudo no início):</b><br>
-            • <b>Dipirona:</b> 2g EV<br>
-            • <b>Toragesic (Cetorolaco):</b> 30mg EV<br>
-            • <b>Dexametasona:</b> 4mg a 8mg EV<br>
-            • <b>Ondansetrona:</b> 4mg EV
+            <b style="color: var(--blue);">Coadjuvantes Multimodais (Administrar obrigatoriamente ANTES da incisão):</b><br>
+            • <b>Dipirona:</b> 2g EV (Inibição central da síntese de prostaglandinas).<br>
+            • <b>Toragesic (Cetorolaco):</b> 30mg EV (Bloqueio inflamatório periférico robusto COX-1/COX-2).<br>
+            • <b>Dexametasona:</b> 10mg EV (1 ampola cheia — Estabilização de membrana e potente efeito analgésico/antiemético sinérgico).<br>
+            • <b>Ondansetrona:</b> 8mg EV (Saturação ideal dos receptores 5-HT3 para prevenção de NVPO em pacientes de alto risco).<br>
+            <br>
+            <i style="color: var(--yellow); font-size: 12px;">* Racional: A administração antes do primeiro corte evita a sensibilização central (wind-up) e reduz drasticamente o consumo de Remifentanil.</i>
         </div>
 
         <button class="btn btn-green" onclick="gerarGrade()">Gerar Plano de Manutenção</button>
@@ -160,33 +162,34 @@ function atualizarDinamica() {
     let orientacaoModelos = "";
     if (via === 'propofol') {
         orientacaoModelos = `• <b>Bomba Propofol TCI:</b> Configurar modelo <b>Schnider (Modo Efeito)</b> utilizando o Peso Ajustado (<b style="color:var(--green);">${pB.toFixed(1)} kg</b>).<br>` +
-                             `• <b>Propofol (1%) Bolus Manual:</b> ${(prop/10).toFixed(1)} ml (${prop.toFixed(0)} mg) se necessário complementar.<br>`;
+                             `• <b>Propofol (1%) Indução com Bolus Manual:</b> ${(prop/10).toFixed(1)} ml (${prop.toFixed(0)} mg) se optar por induzir antes de ligar o alvo Ce da bomba.<br>`;
     } else {
-        orientacaoModelos = `• <b>Propofol (1%) p/ Indução:</b> ${(prop/10).toFixed(1)} ml (${prop.toFixed(0)} mg) em bólus manual lento.<br>`;
+        orientacaoModelos = `• <b>Propofol (1%) Indução com Bolus Manual:</b> ${(prop/10).toFixed(1)} ml (${prop.toFixed(0)} mg) em bólus manual lento para perda do reflexo palpebral.<br>`;
     }
 
     document.getElementById('calculoDosesManual').innerHTML = 
         orientacaoModelos +
-        `• <b>Rocurônio:</b> ${(rocu/10).toFixed(1)} ml (${rocu.toFixed(0)} mg)<br>` +
+        `• <b>Rocurônio:</b> ${(rocu/10).toFixed(1)} ml (${rocu.toFixed(0)} mg) para bloqueio neuromuscular ideal.<br>` +
         `• <b>Mini Dose de Proteção (Indução):</b> Aspire <b>${unidadesUnificadas} UI</b> de Ketamin + <b>${unidadesUnificadas} UI</b> de Precedex na mesma seringa de Insulina de 100 UI.<br>` +
         `<span style="color: var(--blue);">• <b>Bomba Remifentanil TCI:</b> Configurar modelo <b>Minto (Modo Efeito)</b> utilizando o Peso Ajustado (<b style="color:var(--green);">${pB.toFixed(1)} kg</b>).<br>` +
         `• <b>Remifentanil (Alvo de Ataque):</b> Programar Alvo Ce para <b style="color:var(--yellow); font-size:1.1em;">${ceInducaoRemi.toFixed(1)} ng/ml</b> ` +
         `(Vazão Agilia aprox. <b>${vazaoAtaqueRemi.toFixed(1)} ml/h</b>).<br>` +
-        `<b style="color: var(--red);">[ATENÇÃO] Baixar o alvo do Remifentanil IMEDIATAMENTE após a intubação para garantir a estabilidade hemodinâmica.</b></span>`;
+        `<b style="color: var(--red);">[ATENÇÃO] Baixar o alvo do Remifentanil IMEDIATAMENTE após a intubação para garantir a estabilidade hemodinâmica sistémica.</b></span>`;
 
-    // 2. Condicionamento de Manutenção de Adjuvantes por Tempo (Com a Solução Alvo)
+    // 2. Condicionamento de Manutenção de Adjuvantes por Tempo (Racionalizado e Completo)
     if (duracao === 'curta') {
         document.getElementById('textoAdjuvantesTempo').innerHTML = 
             `<b>Plano p/ Cirurgia &le; 2h:</b><br>` +
-            `• A mini dose de Keta+Dex administrada na indução é suficiente para a cobertura de curta duração. Sem bombas adicionais de adjuvantes na manutenção.`;
+            `• A mini dose de Keta+Dex administrada em bólus na indução assegura a proteção nmda/simpática necessária para procedimentos rápidos. Sem necessidade de bombas adicionais de adjuvantes na manutenção.`;
     } else {
         let vazaoLidoDex = (pB / 4).toFixed(1);
         document.getElementById('textoAdjuvantesTempo').innerHTML = 
             `<b>Estratégia Avançada para Procedimentos Longos (Bariátrica / Grandes Portes):</b><br>` +
-            `• Preparar <b>Solução Adjuvante Master</b>: 300 mg de Lidocaína + 50 mcg de Dexmedetomidina. Diluir em SF 0,9% para volume final de <b>50 ml</b>.<br>` +
-            `• Iniciar infusão contínua na velocidade de: <b style="color:var(--green); font-size:1.2em;">${vazaoLidoDex} ml/h</b> (Fórmula: $Peso / 4$).<br>` +
-            `• <b style="color:var(--yellow);">Taxa Equivalente Alvo:</b> Entrega contínua exata de <b style="color:#fff;">1,5 mg/kg/h</b> de Lidocaína e <b style="color:#fff;">0,25 mcg/kg/h</b> de Dexmedetomidina.<br>` +
-            `<b style="color:var(--orange);">[MANEJO] Desligar esta infusão na metade do tempo previsto da cirurgia</b> ou transicionar para metade da velocidade após o meio do procedimento para um despertar imediato.`;
+            `• <b>Preparo da Solução Adjuvante Master:</b> 300 mg de Lidocaína + 50 mcg de Dexmedetomidina. Diluir em SF 0,9% para volume final de <b>50 ml</b>.<br>` +
+            `• <b>Velocidade de Infusão Contínua:</b> Iniciar imediatamente a <b style="color:var(--green); font-size:1.2em;">${vazaoLidoDex} ml/h</b> (Fórmula matemática fixa: $Peso / 4$).<br>` +
+            `• <b>Métrica Dose-Efeito Entregue:</b> Garante exatamente <b style="color:#fff;">1,5 mg/kg/h</b> de Lidocaína (alvo terapêutico para proteção endotelial e íleo paralítico) e <b style="color:#fff;">0,25 mcg/kg/h</b> de Dexmedetomidina (estabilidade simpática sem bradicardia severa).<br>` +
+            `<b style="color:var(--orange); font-size:1.05em;">[MANEJO CRÍTICO TEMPORAL] Desligar esta infusão obrigatoriamente de 40 a 60 minutos ANTES do final estimado da cirurgia.</b><br>` +
+            `<span style="font-size:13px; color:#aaa;">* Justificação: Devido à acumulação tecidual em cirurgias longas, este desligamento programado permite o clareamento plasmático ideal (meia-vida terminal da dexmedetomidina é de ~2h), assegurando um despertar imediato, ventilatório vigoroso e livre de sedação residual profunda na extubação.</span>`;
     }
 
     // 3. Cálculo Fixo da Metadona no Início
@@ -194,7 +197,8 @@ function atualizarDinamica() {
     let doseMax = (pB * 0.08).toFixed(1);
     document.getElementById('calculoOpioideLonga').innerHTML = 
         `Metadona: <b>${doseMin} a ${doseMax} mg EV</b>.<br>` +
-        `<span style="color: var(--green); font-weight: bold;">[MOMENTO] Fazer obrigatoriamente no INÍCIO da indução</span> para latência ideal pós-operatória.`;
+        `<span style="color: var(--green); font-weight: bold;">[MOMENTO] Administrar obrigatoriamente na indução, ANTES da incisão cirúrgica.</span><br>` +
+        `<span style="font-size:13px; color:#aaa;">* Racional: Sendo um opioide de longa duração com forte antagonismo NMDA, necessita de tempo de latência para acoplamento recetorial antes do estímulo nociceptivo, prevenindo a hiperalgesia e garantindo estabilidade analgésica duradoura no pós-operatório.</span>`;
 }
 
 function gerarGrade() {
