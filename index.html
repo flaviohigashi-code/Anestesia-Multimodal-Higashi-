@@ -35,6 +35,7 @@
         .info-box { background: rgba(88, 166, 255, 0.1); border: 1px solid var(--blue); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
         .orange-box { background: rgba(255, 154, 75, 0.1); border: 1px solid var(--orange); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
         .purple-box { background: rgba(210, 168, 255, 0.1); border: 1px solid var(--purple); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
+        .elegante-box { background: rgba(57, 211, 83, 0.08); border: 1px solid var(--green); padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 14px; line-height: 1.6; display: none; }
         .table-container { width: 100%; overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; min-width: 480px; }
         th { background: #21262d; color: var(--green); padding: 10px 5px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
@@ -111,8 +112,10 @@
             <i style="color: var(--yellow); font-size: 12px;">* Racional: A administração antes do primeiro corte evita a sensibilização central (wind-up) e reduz drasticamente o consumo de Remifentanil.</i>
         </div>
 
-        <button class="btn btn-green" onclick="gerarGrade()">Gerar Plano de Manutenção</button>
+        <button class="btn btn-green" onclick="gerarGrade()">Gerar Plano de Manutenção e Despertar</button>
     </div>
+
+    <div id="despertarEleganteBox" class="elegante-box"></div>
 
     <div id="resFinal" class="table-container"></div>
     <div id="bordaoFinal" class="bordao">EXCELENTE!</div>
@@ -176,7 +179,7 @@ function atualizarDinamica() {
         `(Vazão Agilia aprox. <b>${vazaoAtaqueRemi.toFixed(1)} ml/h</b>).<br>` +
         `<b style="color: var(--red);">[ATENÇÃO] Baixar o alvo do Remifentanil IMEDIATAMENTE após a intubação para garantir a estabilidade hemodinâmica sistémica.</b></span>`;
 
-    // 2. Condicionamento de Manutenção de Adjuvantes por Tempo (Racionalizado e Completo)
+    // 2. Condicionamento de Manutenção de Adjuvantes por Tempo
     if (duracao === 'curta') {
         document.getElementById('textoAdjuvantesTempo').innerHTML = 
             `<b>Plano p/ Cirurgia &le; 2h:</b><br>` +
@@ -187,7 +190,7 @@ function atualizarDinamica() {
             `<b>Estratégia Avançada para Procedimentos Longos (Bariátrica / Grandes Portes):</b><br>` +
             `• <b>Preparo da Solução Adjuvante Master:</b> 300 mg de Lidocaína + 50 mcg de Dexmedetomidina. Diluir em SF 0,9% para volume final de <b>50 ml</b>.<br>` +
             `• <b>Velocidade de Infusão Contínua:</b> Iniciar imediatamente a <b style="color:var(--green); font-size:1.2em;">${vazaoLidoDex} ml/h</b> (Fórmula matemática fixa: $Peso / 4$).<br>` +
-            `• <b>Métrica Dose-Efeito Entregue:</b> Garante exatamente <b style="color:#fff;">1,5 mg/kg/h</b> de Lidocaína (alvo terapêutico para proteção endotelial e íleo paralítico) e <b style="color:#fff;">0,25 mcg/kg/h</b> de Dexmedetomidina (estabilidade simpática sem bradicardia severa).<br>` +
+            `• <b>Métrica Dose-Efeito Entregue:</b> Garante exatamente <b style="color:#fff;">1,5 mg/kg/h</b> de Lidocaína e <b style="color:#fff;">0,25 mcg/kg/h</b> de Dexmedetomidina.<br>` +
             `<b style="color:var(--orange); font-size:1.05em;">[MANEJO CRÍTICO TEMPORAL] Desligar esta infusão obrigatoriamente de 40 a 60 minutos ANTES do final estimado da cirurgia.</b><br>` +
             `<span style="font-size:13px; color:#aaa;">* Justificação: Devido à acumulação tecidual em cirurgias longas, este desligamento programado permite o clareamento plasmático ideal (meia-vida terminal da dexmedetomidina é de ~2h), assegurando um despertar imediato, ventilatório vigoroso e livre de sedação residual profunda na extubação.</span>`;
     }
@@ -199,6 +202,11 @@ function atualizarDinamica() {
         `Metadona: <b>${doseMin} a ${doseMax} mg EV</b>.<br>` +
         `<span style="color: var(--green); font-weight: bold;">[MOMENTO] Administrar obrigatoriamente na indução, ANTES da incisão cirúrgica.</span><br>` +
         `<span style="font-size:13px; color:#aaa;">* Racional: Sendo um opioide de longa duração com forte antagonismo NMDA, necessita de tempo de latência para acoplamento recetorial antes do estímulo nociceptivo, prevenindo a hiperalgesia e garantindo estabilidade analgésica duradoura no pós-operatório.</span>`;
+        
+    // Oculta caixas de resultados antigos ao mexer nas configs para forçar novo clique
+    document.getElementById('despertarEleganteBox').style.display = 'none';
+    document.getElementById('resFinal').innerHTML = "";
+    document.getElementById('bordaoFinal').style.display = 'none';
 }
 
 function gerarGrade() {
@@ -207,7 +215,7 @@ function gerarGrade() {
     let via = document.getElementById('viaManutencao').value;
     let duracao = document.getElementById('duracaoCirurgia').value;
 
-    let fatorIdadeEleveld = i > 45 ? Math.exp(-0.005 * (i - 45)) : 1.0;
+    let fIdade = i > 45 ? Math.exp(-0.005 * (i - 45)) : 1.0;
     let camBasalSevo = 2.0 * Math.pow(0.96, (i - 40) / 10);
     if(i < 5) camBasalSevo = 2.5;
 
@@ -216,7 +224,42 @@ function gerarGrade() {
     let rS = 0.70; 
 
     let html = "";
+    let htmlDespertar = "";
 
+    // Construção do Bloco do Despertar Elegante Baseado na Via
+    if (via === 'propofol') {
+        htmlDespertar = `
+            <b style="color: var(--green); font-size: 1.1em; text-transform: uppercase;">3. Protocolo de Despertar Elegante (Via TIVA)</b><br>
+            <div style="margin-top: 8px;">
+                1️⃣ <b>Ao Iniciar a Sutura de Pele:</b> Reduzir imediatamente os alvos na bomba para <b style="color: var(--yellow);">Propofol Ce 1,5 mcg/ml</b> e <b style="color: var(--blue);">Remifentanil Ce 0,5 ng/ml</b>.<br>
+                2️⃣ <b>No Último Ponto da Pele:</b> <b style="color: var(--red);">Desligar completamente a bomba de Propofol</b>. Manter a bomba de <b style="color: var(--blue);">Remifentanil fixa em Ce 0,5 ng/ml</b>.<br>
+                3️⃣ <b>Monitorização do Sensorium:</b> Aguardar o índice do monitor de atividade cerebral (PSI / BIS) subir de forma estável até atingir <b style="color: var(--purple); font-weight: bold;">60</b>.<br>
+                4️⃣ <b>Reversão Consciente (Manejo Crítico):</b> No exato momento em que o PSI tocar em 60, administrar o <b>Sugamadex EV</b> (2 a 4 mg/kg).<br>
+                <span style="font-size:13px; color:#aaa; display:block; margin-left: 15px;"><i>* Justificação: Reverter o bloqueio neuromuscular no último minuto antes da consciência total elimina a agitação de despertar e evita a tosse espástica na cânula, pois o paciente recupera o tônus muscular ainda sob sedação basal.</i></span>
+                5️⃣ <b>Extubação Segura:</b> Aspire as secreções de forma extremamente suave. Chame o paciente firmemente pelo nome. Assim que <b>abrir os olhos</b>, comande: <i>"Abra a boca"</i>. Ao abrir a boca, <b>proceder à extubação imediata</b>.<br>
+                6️⃣ <b>Finalização:</b> <b style="color: var(--red);">Desligar a bomba de Remifentanil</b> imediatamente após a saída do tubo endotraqueal.<br>
+                <br>
+                🚀 <b style="color: var(--green);">Previsão Estatística do Esquema: Em até 2 minutos o paciente estará perfeitamente consciente e conversando na sala.</b>
+            </div>`;
+    } else {
+        htmlDespertar = `
+            <b style="color: var(--purple); font-size: 1.1em; text-transform: uppercase;">3. Protocolo de Despertar Elegante (Via PIVA / Sevo)</b><br>
+            <div style="margin-top: 8px;">
+                1️⃣ <b>Ao Iniciar a Sutura de Pele:</b> <b style="color: var(--red);">Fechar totalmente o vaporizador de Sevoflurano</b>, mantendo rigorosamente o mesmo fluxo de gases. Baixar o alvo do <b style="color: var(--blue);">Remifentanil Ce para 0,5 ng/ml</b>.<br>
+                2️⃣ <b>Ao Término da Sutura (Último Ponto):</b> Aumentar o fluxo de gases frescos na máquina de anestesia para realizar a <b>lavagem rápida do sistema</b> e acelerar a eliminação do halogenado.<br>
+                3️⃣ <b>Manejo da Fração Expirada:</b> Monitorizar de perto a análise de gases expirados. No exato instante em que a <b>Fração Expirada de Sevoflurano (FeSevo) atingir 0,2%</b>, administrar o <b>Sugamadex EV</b> (2 a 4 mg/kg).<br>
+                <span style="font-size:13px; color:#aaa; display:block; margin-left: 15px;"><i>* Justificação: Realizar a reversão neuromuscular com a FeSevo em 0,2% protege o paciente contra o pânico do despertar com bloqueio residual, garantindo uma transição suave, sem agitação psicomotora e sem tosse.</i></span>
+                4️⃣ <b>Extubação Segura:</b> Realizar a aspiração orofaríngea de forma muito delicada e chamar o paciente pelo nome. Assim que ele <b>abrir os olhos</b>, solicite: <i>"Abra a boca"</i>. Assim que ele abrir a boca, <b>proceder à extubação imediata</b>.<br>
+                5️⃣ <b>Finalização:</b> <b style="color: var(--red);">Desligar a infusão de Remifentanil</b> logo após retirar o tubo.<br>
+                <br>
+                🚀 <b style="color: var(--green);">Previsão Estatística do Esquema: Em até 2 minutos o paciente estará completamente desperto, calmo e conversando na mesa.</b>
+            </div>`;
+    }
+
+    document.getElementById('despertarEleganteBox').innerHTML = htmlDespertar;
+    document.getElementById('despertarEleganteBox').style.display = 'block';
+
+    // Criação das Tabelas Tradicionais de Manutenção
     if (via === 'propofol') {
         let ceBaseP = i > 75 ? 1.6 : (i < 12 ? 3.5 : 2.5);
         let ceBaseR = i > 75 ? 1.2 : (i < 12 ? 3.8 : 2.8); 
@@ -226,13 +269,13 @@ function gerarGrade() {
             { t: "Pós-Intubação (Estabilização)", cp: ceBaseP, cr: ceBaseR },
             { t: "Estímulo Máximo (Incisão/Pneumo)", cp: ceBaseP * 1.2, cr: ceBaseR * 1.3 },
             { t: "Manutenção Estável", cp: ceBaseP * 0.9, cr: ceBaseR * 0.9 },
-            { t: "Fechamento / Transição", cp: ceBaseP * 0.7 * modFim, cr: ceBaseR * 0.5 * modFim },
-            { t: "Despertar Programado", cp: ceBaseP * 0.5 * modFim, cr: ceBaseR * 0.3 }
+            { t: "Início da Sutura (Despertar Elegante)", cp: 1.5, cr: 0.5 },
+            { t: "Último Ponto da Pele", cp: 0.0, cr: 0.5 }
         ];
 
         html = `<table>
                     <tr>
-                        <th rowspan="2">Fase de Manutenção</th>
+                        <th rowspan="2">4. Mapa de Manutenção</th>
                         <th colspan="2">PROPOFOL (Schnider Efeito)</th>
                         <th colspan="2">REMI (Minto Efeito)</th>
                     </tr>
@@ -243,13 +286,13 @@ function gerarGrade() {
 
         fasesProp.forEach(f => {
             let alo = Math.pow(pB / 70, 0.75);
-            let mlp = ((f.cp * 22 / 1000) * rP * fatorIdadeEleveld * 1000 * 70 * alo * 60) / 10000;
-            let mlr = ((f.cr * 0.045) * rR * fatorIdadeEleveld * 70 * alo * 60) / 40;
+            let mlp = f.cp === 0 ? 0 : ((f.cp * 22 / 1000) * rP * fIdade * 1000 * 70 * alo * 60) / 10000;
+            let mlr = ((f.cr * 0.045) * rR * fIdade * 70 * alo * 60) / 40;
 
             html += `<tr>
                 <td style="text-align:left; font-weight:bold;">${f.t}</td>
-                <td class="ce-val">${f.cp.toFixed(1)} mcg/ml</td>
-                <td class="highlight-ml">${mlp.toFixed(1)}</td>
+                <td class="ce-val">${f.cp === 0 ? 'DESLIGADO' : f.cp.toFixed(1) + ' mcg/ml'}</td>
+                <td class="highlight-ml">${mlp === 0 ? '0.0' : mlp.toFixed(1)}</td>
                 <td class="ce-val">${f.cr.toFixed(1)} ng/ml</td>
                 <td class="highlight-ml">${mlr.toFixed(1)}</td>
             </tr>`;
@@ -257,24 +300,23 @@ function gerarGrade() {
 
     } else {
         let ceBaseR = i > 75 ? 1.0 : (i < 12 ? 3.5 : 2.4);
-        let modFim = (duracao === 'longa') ? 0.75 : 1.0;
 
         const fasesSevo = [
             { t: "Pós-Intubação (Estabilização)", cam: 0.8 * rS, cr: ceBaseR },
             { t: "Estímulo Máximo (Incisão/Pneumo)", cam: 1.1 * rS, cr: ceBaseR * 1.2 },
             { t: "Manutenção Estável", cam: 0.7 * rS, cr: ceBaseR * 0.9 },
-            { t: "Fechamento (Lavagem rápida)", cam: 0.4 * rS * modFim, cr: ceBaseR * 0.4 * modFim },
-            { t: "Despertar (Gás Expirado p/ Zero)", cam: 0.1, cr: ceBaseR * 0.2 }
+            { t: "Início da Sutura (Despertar Elegante)", cam: 0.0, cr: 0.5 },
+            { t: "Manejo da Fração Expirada (FeSevo 0,2)", cam: 0.0, cr: 0.5 }
         ];
 
         html = `<table>
                     <tr>
-                        <th rowspan="2">Fase de Manutenção</th>
+                        <th rowspan="2">4. Mapa de Manutenção</th>
                         <th colspan="2">SEVOFLURANO (PIVA)</th>
                         <th colspan="2">REMI (Minto Efeito)</th>
                     </tr>
                     <tr>
-                        <th>Fração CAM</th><th>Alvo Expirado (%)</th>
+                        <th>Fração CAM</th><th>Alvo Esperado</th>
                         <th>Alvo Ce</th><th>Agilia Vazão (ml/h)</th>
                     </tr>`;
 
@@ -283,10 +325,13 @@ function gerarGrade() {
             let alo = Math.pow(pB / 70, 0.75);
             let mlr = ((f.cr * 0.045) * rR * 1.0 * 70 * alo * 60) / 40;
 
+            let textoCam = f.t.includes("Sutura") || f.t.includes("Expirada") ? "VAPORIZADOR FECHADO" : f.cam.toFixed(2) + " CAM";
+            let textoAlvoSevo = f.t.includes("Sutura") ? "Mesmo Fluxo" : (f.t.includes("Expirada") ? "Lavar Sistema &rarr; FeSevo 0.2%" : alvoPorcentagemSevo.toFixed(1) + " %");
+
             html += `<tr>
                 <td style="text-align:left; font-weight:bold;">${f.t}</td>
-                <td class="ce-val">${f.cam.toFixed(2)} CAM</td>
-                <td class="highlight-cam">${alvoPorcentagemSevo.toFixed(1)} %</td>
+                <td class="ce-val">${textoCam}</td>
+                <td class="highlight-cam" style="font-size: 12px;">${textoAlvoSevo}</td>
                 <td class="ce-val">${f.cr.toFixed(1)} ng/ml</td>
                 <td class="highlight-ml">${mlr.toFixed(1)}</td>
             </tr>`;
