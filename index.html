@@ -155,10 +155,8 @@ function atualizarDinamica() {
     let alo = Math.pow(pB / 70, 0.75);
     let vazaoAtaqueRemi = ((ceInducaoRemi * 0.045) * 70 * alo * 60) / 40;
 
-    // Mini dose unificada para qualquer indução (Seringa de Insulina)
     let unidadesUnificadas = (pB / 3).toFixed(0);
 
-    // Texto descritivo de Alvos e Modelos de acordo com a via selecionada
     let orientacaoModelos = "";
     if (via === 'propofol') {
         orientacaoModelos = `• <b>Bomba Propofol TCI:</b> Configurar modelo <b>Schnider (Modo Efeito)</b> utilizando o Peso Ajustado (<b style="color:var(--green);">${pB.toFixed(1)} kg</b>).<br>` +
@@ -176,7 +174,7 @@ function atualizarDinamica() {
         `(Vazão Agilia aprox. <b>${vazaoAtaqueRemi.toFixed(1)} ml/h</b>).<br>` +
         `<b style="color: var(--red);">[ATENÇÃO] Baixar o alvo do Remifentanil IMEDIATAMENTE após a intubação para garantir a estabilidade hemodinâmica.</b></span>`;
 
-    // 2. Condicionamento de Manutenção de Adjuvantes por Tempo
+    // 2. Condicionamento de Manutenção de Adjuvantes por Tempo (Com a Solução Alvo)
     if (duracao === 'curta') {
         document.getElementById('textoAdjuvantesTempo').innerHTML = 
             `<b>Plano p/ Cirurgia &le; 2h:</b><br>` +
@@ -184,9 +182,11 @@ function atualizarDinamica() {
     } else {
         let vazaoLidoDex = (pB / 4).toFixed(1);
         document.getElementById('textoAdjuvantesTempo').innerHTML = 
-            `<b>Plano p/ Cirurgia &gt; 2h:</b><br>` +
-            `• Além da mini dose protetora inicial (Keta+Dex), iniciar **Infusão Contínua de Lidocaína + Dexmedetomidina** na velocidade de <b style="color:var(--green); font-size:1.1em;">${vazaoLidoDex} ml/h</b> ($Peso / 4$).<br>` +
-            `<b style="color:var(--orange);">[MANEJO] Desligar esta infusão na metade do tempo previsto da cirurgia</b> ou transicionar para metade da velocidade após o meio do procedimento.`;
+            `<b>Estratégia Avançada para Procedimentos Longos (Bariátrica / Grandes Portes):</b><br>` +
+            `• Preparar <b>Solução Adjuvante Master</b>: 300 mg de Lidocaína + 50 mcg de Dexmedetomidina. Diluir em SF 0,9% para volume final de <b>50 ml</b>.<br>` +
+            `• Iniciar infusão contínua na velocidade de: <b style="color:var(--green); font-size:1.2em;">${vazaoLidoDex} ml/h</b> (Fórmula: $Peso / 4$).<br>` +
+            `• <b style="color:var(--yellow);">Taxa Equivalente Alvo:</b> Entrega contínua exata de <b style="color:#fff;">1,5 mg/kg/h</b> de Lidocaína e <b style="color:#fff;">0,25 mcg/kg/h</b> de Dexmedetomidina.<br>` +
+            `<b style="color:var(--orange);">[MANEJO] Desligar esta infusão na metade do tempo previsto da cirurgia</b> ou transicionar para metade da velocidade após o meio do procedimento para um despertar imediato.`;
     }
 
     // 3. Cálculo Fixo da Metadona no Início
