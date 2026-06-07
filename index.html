@@ -35,6 +35,7 @@
         .info-box { background: rgba(88, 166, 255, 0.1); border: 1px solid var(--blue); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
         .orange-box { background: rgba(255, 154, 75, 0.1); border: 1px solid var(--orange); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
         .purple-box { background: rgba(210, 168, 255, 0.1); border: 1px solid var(--purple); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
+        .pediatria-box { background: rgba(251, 191, 36, 0.08); border: 1px solid var(--yellow); padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 15px; line-height: 1.6; display: none; text-align: center; }
         .elegante-box { background: rgba(57, 211, 83, 0.08); border: 1px solid var(--green); padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 14px; line-height: 1.6; display: none; }
         .table-container { width: 100%; overflow-x: auto; margin-top: 15px; }
         table { width: 100%; border-collapse: collapse; min-width: 480px; }
@@ -63,12 +64,18 @@
         <button class="btn btn-green" onclick="calcularPesos()">Analisar e Planejar a Multimodal</button>
 
         <div class="weight-results" id="weightResults">
-            <div class="card-p"><h4>Massa Magra Ativa / Peso Ajustado</h4><span id="resSugerido">0</span> kg</div>
+            <div class="card-p"><h4 id="labelPeso">Massa Magra Ativa / Peso Ajustado</h4><span id="resSugerido">0</span> kg</div>
         </div>
     </div>
 
+    <div id="pediatriaBox" class="pediatria-box">
+        <b style="color: var(--yellow); font-size: 1.2em; text-transform: uppercase;">Aviso de Segurança Clínica</b><br><br>
+        <span style="color: #fff; font-weight: bold; font-size: 1.1em;">Indicada indução inalatória ou seguir um protocolo de anestesia pediátrica.</span><br><br>
+        <i style="color: #8b949e; font-size: 13px;">* Os modelos farmacocinéticos de infusão contínua TCI e o manejo multimodal de grandes volumes deste painel são calibrados exclusivamente para pacientes acima de 10 anos.</i>
+    </div>
+
     <div class="strategy-box" id="strategyBox">
-        <label>2. Configurações da Estratégia</label>
+        <label id="labelConfigEstrategia">2. Configurações da Estratégia</label>
         
         <div class="grid-inputs">
             <div>
@@ -104,12 +111,7 @@
 
         <div class="info-box">
             <b style="color: var(--blue);">Coadjuvantes Multimodais (Administrar obrigatoriamente ANTES da incisão):</b><br>
-            • <b>Dipirona:</b> 2g EV (Inibição central da síntese de prostaglandinas).<br>
-            • <b>Toragesic (Cetorolaco):</b> 30mg EV (Bloqueio inflamatório periférico robusto COX-1/COX-2).<br>
-            • <b>Dexametasona:</b> 10mg EV (1 ampola cheia — Estabilização de membrana e potente efeito analgésico/antiemético sinérgico).<br>
-            • <b>Ondansetrona:</b> 8mg EV (Saturação ideal dos receptores 5-HT3 para prevenção de NVPO em pacientes de alto risco).<br>
-            <br>
-            <i style="color: var(--yellow); font-size: 12px;">* Racional: A administração antes do primeiro corte evita a sensibilização central (wind-up) e reduz drasticamente o consumo de Remifentanil.</i>
+            <div id="textoCoadjuvantesGerais"></div>
         </div>
 
         <button class="btn btn-green" onclick="gerarGrade()">Gerar Plano de Manutenção e Despertar</button>
@@ -138,9 +140,21 @@ function calcularPesos() {
 
     document.getElementById('resSugerido').innerText = pSugerido.toFixed(1);
     
-    document.getElementById('weightResults').style.display = 'grid';
-    document.getElementById('strategyBox').style.display = 'flex';
-    atualizarDinamica();
+    // BIFURCAÇÃO SE SEJA CRIANÇA (IDADE <= 10)
+    if(i <= 10) {
+        document.getElementById('weightResults').style.display = 'none';
+        document.getElementById('strategyBox').style.display = 'none';
+        document.getElementById('despertarEleganteBox').style.display = 'none';
+        document.getElementById('resFinal').innerHTML = "";
+        document.getElementById('bordaoFinal').style.display = 'none';
+        
+        document.getElementById('pediatriaBox').style.display = 'block';
+    } else {
+        document.getElementById('pediatriaBox').style.display = 'none';
+        document.getElementById('weightResults').style.display = 'grid';
+        document.getElementById('strategyBox').style.display = 'flex';
+        atualizarDinamica();
+    }
 }
 
 function atualizarDinamica() {
@@ -149,18 +163,16 @@ function atualizarDinamica() {
     let duracao = document.getElementById('duracaoCirurgia').value;
     let via = document.getElementById('viaManutencao').value;
 
-    let fatorIdadeEleveld = idade > 45 ? Math.exp(-0.005 * (idade - 45)) : 1.0;
+    let unidadesUnificadas = (pB / 3).toFixed(0);
 
-    // 1. Indução Otimizada
+    let fIdadeEleveld = idade > 45 ? Math.exp(-0.005 * (idade - 45)) : 1.0;
     let mkgP = idade > 70 ? 1.0 : 1.5; 
     let prop = pB * mkgP;
     let rocu = pB * 0.6;
     
-    let ceInducaoRemi = 5.5 * fatorIdadeEleveld; 
+    let ceInducaoRemi = 5.5 * fIdadeEleveld; 
     let alo = Math.pow(pB / 70, 0.75);
     let vazaoAtaqueRemi = ((ceInducaoRemi * 0.045) * 70 * alo * 60) / 40;
-
-    let unidadesUnificadas = (pB / 3).toFixed(0);
 
     let orientacaoModelos = "";
     if (via === 'propofol') {
@@ -179,7 +191,6 @@ function atualizarDinamica() {
         `(Vazão Agilia aprox. <b>${vazaoAtaqueRemi.toFixed(1)} ml/h</b>).<br>` +
         `<b style="color: var(--red);">[ATENÇÃO] Baixar o alvo do Remifentanil IMEDIATAMENTE após a intubação para garantir a estabilidade hemodinâmica sistémica.</b></span>`;
 
-    // 2. Condicionamento de Manutenção de Adjuvantes por Tempo
     if (duracao === 'curta') {
         document.getElementById('textoAdjuvantesTempo').innerHTML = 
             `<b>Plano p/ Cirurgia &le; 2h:</b><br>` +
@@ -195,7 +206,6 @@ function atualizarDinamica() {
             `<span style="font-size:13px; color:#aaa;">* Justificação: Devido à acumulação tecidual em cirurgias longas, este desligamento programado permite o clareamento plasmático ideal (meia-vida terminal da dexmedetomidina é de ~2h), assegurando um despertar imediato, ventilatório vigoroso e livre de sedação residual profunda na extubação.</span>`;
     }
 
-    // 3. Cálculo Fixo da Metadona no Início
     let doseMin = (pB * 0.05).toFixed(1);
     let doseMax = (pB * 0.08).toFixed(1);
     document.getElementById('calculoOpioideLonga').innerHTML = 
@@ -203,7 +213,12 @@ function atualizarDinamica() {
         `<span style="color: var(--green); font-weight: bold;">[MOMENTO] Administrar obrigatoriamente na indução, ANTES da incisão cirúrgica.</span><br>` +
         `<span style="font-size:13px; color:#aaa;">* Racional: Sendo um opioide de longa duração com forte antagonismo NMDA, necessita de tempo de latência para acoplamento recetorial antes do estímulo nociceptivo, prevenindo a hiperalgesia e garantindo estabilidade analgésica duradoura no pós-operatório.</span>`;
         
-    // Oculta caixas de resultados antigos ao mexer nas configs para forçar novo clique
+    document.getElementById('textoCoadjuvantesGerais').innerHTML = 
+        `• <b>Dipirona:</b> 2g EV (Inibição central da síntese de prostaglandinas).<br>` +
+        `• <b>Toragesic (Cetorolaco):</b> 30mg EV (Bloqueio inflamatório periférico robusto COX-1/COX-2).<br>` +
+        `• <b>Dexametasona:</b> 10mg EV (1 ampola cheia — Estabilização de membrana e potente efeito analgésico/antiemético sinérgico).<br>` +
+        `• <b>Ondansetrona:</b> 8mg EV (Saturação ideal dos receptores 5-HT3 para prevenção de NVPO em pacientes de alto risco).`;
+
     document.getElementById('despertarEleganteBox').style.display = 'none';
     document.getElementById('resFinal').innerHTML = "";
     document.getElementById('bordaoFinal').style.display = 'none';
@@ -217,16 +232,10 @@ function gerarGrade() {
 
     let fIdade = i > 45 ? Math.exp(-0.005 * (i - 45)) : 1.0;
     let camBasalSevo = 2.0 * Math.pow(0.96, (i - 40) / 10);
-    if(i < 5) camBasalSevo = 2.5;
 
-    let rP = 0.65; 
-    let rR = 0.55; 
-    let rS = 0.70; 
+    let rP = 0.65; let rR = 0.55; let rS = 0.70; 
+    let html = ""; let htmlDespertar = "";
 
-    let html = "";
-    let htmlDespertar = "";
-
-    // Construção do Bloco do Despertar Elegante Baseado na Via
     if (via === 'propofol') {
         htmlDespertar = `
             <b style="color: var(--green); font-size: 1.1em; text-transform: uppercase;">3. Protocolo de Despertar Elegante (Via TIVA)</b><br>
@@ -259,11 +268,9 @@ function gerarGrade() {
     document.getElementById('despertarEleganteBox').innerHTML = htmlDespertar;
     document.getElementById('despertarEleganteBox').style.display = 'block';
 
-    // Criação das Tabelas Tradicionais de Manutenção
     if (via === 'propofol') {
-        let ceBaseP = i > 75 ? 1.6 : (i < 12 ? 3.5 : 2.5);
-        let ceBaseR = i > 75 ? 1.2 : (i < 12 ? 3.8 : 2.8); 
-        let modFim = (duracao === 'longa') ? 0.8 : 1.0; 
+        let ceBaseP = i > 75 ? 1.6 : 2.5;
+        let ceBaseR = i > 75 ? 1.2 : 2.8; 
 
         const fasesProp = [
             { t: "Pós-Intubação (Estabilização)", cp: ceBaseP, cr: ceBaseR },
@@ -299,7 +306,7 @@ function gerarGrade() {
         });
 
     } else {
-        let ceBaseR = i > 75 ? 1.0 : (i < 12 ? 3.5 : 2.4);
+        let ceBaseR = i > 75 ? 1.0 : 2.4;
 
         const fasesSevo = [
             { t: "Pós-Intubação (Estabilização)", cam: 0.8 * rS, cr: ceBaseR },
