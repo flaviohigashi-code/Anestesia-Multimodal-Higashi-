@@ -1,354 +1,1099 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Protocolo Esquema Master by Higashi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sugestão de Doses para Anestesia Multimodal by Higashi</title>
     <style>
-        :root {
-            --bg: #0d1117;
-            --card: #161b22;
-            --blue: #58a6ff;
-            --green: #39d353;
-            --yellow: #fbbf24;
-            --red: #f85149;
-            --purple: #d2a8ff;
-            --orange: #ff9a4b;
-            --border: #30363d;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 10px;
         }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: #c9d1d9; padding: 10px; margin: 0; font-size: 16px; }
-        .container { max-width: 100%; background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--border); margin: auto; box-sizing: border-box; }
-        h2 { color: var(--green); text-align: center; text-transform: uppercase; margin: 10px 0 5px 0; font-size: 1.3em; letter-spacing: 1px; }
-        .sub { text-align: center; color: #8b949e; font-size: 12px; margin-bottom: 20px; text-transform: uppercase; }
-        .section { background: var(--bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid var(--border); }
-        .grid-inputs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .weight-results { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 15px; display: none; }
-        .card-p { background: #1c2128; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid var(--green); }
-        .card-p h4 { margin: 0; font-size: 11px; color: var(--green); text-transform: uppercase; }
-        .card-p span { font-size: 24px; font-weight: bold; color: #fff; }
-        label { font-size: 11px; color: #8b949e; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 4px; margin-top: 8px; }
-        input, select { width: 100%; padding: 12px; background: #161b22; border: 1px solid var(--border); color: #fff; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 18px; border: none; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 10px; font-size: 16px; text-transform: uppercase; }
-        .btn-green { background: var(--green); color: #0d1117; }
-        .strategy-box { display: none; flex-direction: column; gap: 5px; margin-top: 15px; padding: 15px; background: #21262d; border-radius: 10px; }
-        .dose-manual-box { background: rgba(248, 81, 73, 0.1); border: 1px solid var(--red); padding: 12px; border-radius: 8px; margin-top: 10px; display: none; }
-        .info-box { background: rgba(88, 166, 255, 0.1); border: 1px solid var(--blue); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
-        .orange-box { background: rgba(255, 154, 75, 0.1); border: 1px solid var(--orange); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
-        .purple-box { background: rgba(210, 168, 255, 0.1); border: 1px solid var(--purple); padding: 12px; border-radius: 8px; margin-top: 12px; font-size: 14px; line-height: 1.5; }
-        .pediatria-box { background: rgba(251, 191, 36, 0.08); border: 1px solid var(--yellow); padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 15px; line-height: 1.6; display: none; text-align: center; }
-        .elegante-box { background: rgba(57, 211, 83, 0.08); border: 1px solid var(--green); padding: 15px; border-radius: 10px; margin-top: 15px; font-size: 14px; line-height: 1.6; display: none; }
-        .table-container { width: 100%; overflow-x: auto; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; min-width: 480px; }
-        th { background: #21262d; color: var(--green); padding: 10px 5px; border: 1px solid var(--border); font-size: 10px; text-transform: uppercase; }
-        td { padding: 12px 5px; border: 1px solid var(--border); text-align: center; font-family: 'Courier New', monospace; font-size: 14px; }
-        .highlight-ml { color: var(--green); font-weight: bold; font-size: 1.3em; }
-        .highlight-cam { color: var(--purple); font-weight: bold; font-size: 1.3em; }
-        .ce-val { color: var(--yellow); font-weight: bold; }
-        .bordao { text-align: center; font-size: 2.2em; font-weight: 900; color: var(--green); margin-top: 30px; text-shadow: 0 0 15px rgba(57, 211, 83, 0.5); display: none; }
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 5px;
+            font-size: 1.35em;
+        }
+        .subtítulo {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95em;
+            font-style: italic;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #004085;
+        }
+        .btn-avancar {
+            background-color: #28a745;
+            padding: 16px;
+            font-size: 18px;
+            margin-top: 15px;
+        }
+        .btn-avancar:hover {
+            background-color: #218838;
+        }
+        .calculadora-section {
+            display: none;
+            margin-top: 20px;
+            border-top: 2px dashed #ced4da;
+            padding-top: 20px;
+        }
+        .results-section {
+            margin-top: 25px;
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+            display: none;
+        }
+        .results-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn-toggle-roteiro {
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: auto;
+            margin-top: 0;
+            font-weight: normal;
+        }
+        .btn-toggle-roteiro:hover {
+            background-color: #dee2e6;
+        }
+        .selector-infusao {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .btn-select {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            background-color: #f1f3f5;
+            color: #495057;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 0;
+        }
+        .btn-select.active {
+            background-color: #0056b3;
+            color: white;
+            border-color: #0056b3;
+        }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 8px 4px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
+            word-break: break-word;
+        }
+        th {
+            background-color: #f8f9fa;
+            color: #495057;
+            font-weight: bold;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #d9534f;
+            font-size: 1.2em;
+            white-space: nowrap;
+        }
+        .highlight-ml {
+            font-weight: bold;
+            color: #0056b3;
+            font-size: 1.25em;
+            white-space: nowrap;
+        }
+        .info-diluicao {
+            font-size: 0.8em;
+            color: #666;
+            display: block;
+            margin-top: 2px;
+        }
+        .desmame-info {
+            font-size: 0.78em;
+            color: #d9534f;
+            font-weight: bold;
+            display: block;
+            margin-top: 3px;
+        }
+        .alerta-idade {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            border-left: 5px solid #ffeeba;
+            display: none;
+        }
+        .alerta-ainh {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+            border-left: 5px solid #f5c6cb;
+            display: none;
+        }
+        
+        .timeline-container {
+            display: none;
+        }
+        .timeline {
+            margin-top: 15px;
+            padding-left: 10px;
+            border-left: 3px solid #0056b3;
+        }
+        .timeline-item {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -16px;
+            top: 3px;
+            background: #0056b3;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .timeline-title {
+            font-weight: bold;
+            color: #0056b3;
+            font-size: 0.95em;
+            margin-bottom: 3px;
+        }
+        .timeline-desc {
+            font-size: 0.88em;
+            color: #444;
+            line-height: 1.4;
+        }
+        .badge-drug {
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+        .badge-dinamico {
+            background: #0056b3;
+            color: white;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .btn-bibliografia {
+            background-color: #6c757d;
+            padding: 10px;
+            font-size: 14px;
+            margin-top: 30px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 100%;
+            cursor: pointer;
+        }
+        .btn-bibliografia:hover {
+            background-color: #5a6268;
+        }
+        .bibliografia-content {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .bibliografia-content ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+        .bibliografia-content li {
+            margin-bottom: 10px;
+        }
+        .bibliografia-content a {
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .bibliografia-content a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Protocolo Esquema Master</h2>
-    <div class="sub">Desenvolvido por Dr. Higashi</div>
+    <h2>Sugestão de doses para anestesia multimodal by Higashi</h2>
+    <div class="subtítulo">Revisada por OpenEvidence. Cirurgias até 3 horas.</div>
     
-    <div class="section">
-        <label>1. Perfil do Paciente</label>
-        <div class="grid-inputs">
-            <div><label>Peso Real (kg)</label><input type="number" id="p" value="70" inputmode="decimal"></div>
-            <div><label>Altura (cm)</label><input type="number" id="h" value="170" inputmode="decimal"></div>
-            <div><label>Idade (anos)</label><input type="number" id="i" value="40" inputmode="decimal"></div>
-            <div><label>Sexo</label><select id="s"><option value="M">Masc</option><option value="F">Fem</option></select></div>
-        </div>
-        <button class="btn btn-green" onclick="calcularPesos()">Analisar e Planejar a Multimodal</button>
+    <div style="box-sizing: border-box; max-width: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 5px;">
 
-        <div class="weight-results" id="weightResults">
-            <div class="card-p"><h4 id="labelPeso">Massa Magra Ativa / Peso Ajustado</h4><span id="resSugerido">0</span> kg</div>
-        </div>
+        <div class="aviso-importante" style="box-sizing: border-box; background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px; margin-bottom: 20px; border-radius: 4px; width: 100%;"> 
+            <h3 style="color: #856404; margin-top: 0; font-size: 1.15em; font-weight: bold; letter-spacing: 0.5px;">[!] AVISO IMPORTANTE - LEIA ANTES DE USAR</h3> 
+            <p style="color: #856404; margin-bottom: 12px; font-weight: bold; font-size: 1em; line-height: 1.4;"> 
+                Este N&Atilde;O &eacute; um protocolo completo de anestesia. Trata-se de uma ferramenta auxiliar de c&aacute;lculo de doses para anestesia multimodal em pacientes selecionados. 
+            </p> 
+            <p style="color: #856404; margin-bottom: 8px; font-size: 0.95em; font-weight: bold;"> 
+                Responsabilidades do anestesiologista: 
+            </p> 
+            <ul style="color: #856404; margin: 0; padding-left: 20px; font-size: 0.95em; line-height: 1.6;"> 
+                <li> Avaliar elegibilidade do paciente (veja crit&eacute;rios abaixo)</li> 
+                <li> Verificar contraindica&ccedil;&otilde;es espec&iacute;ficas para cada f&aacute;rmaco</li> 
+                <li> Garantir monitoriza&ccedil;&atilde;o adequada (ECG cont&iacute;nuo, PA, SpO2, EtCO2, TOF)</li> 
+                <li> Ter drogas de resgate preparadas (atropina, vasopressor, emuls&atilde;o lip&iacute;dica 20%)</li> 
+                <li> Adaptar a t&eacute;cnica ao contexto cl&iacute;nico individual</li> 
+                <li> Seguir as diretrizes institucionais e da ASA</li> 
+            </ul> 
+            <p style="color: #856404; margin-top: 12px; margin-bottom: 0; font-size: 0.9em; font-style: italic; line-height: 1.4;"> 
+                O "Guia de Conduta" apresentado &eacute; um EXEMPLO de sequ&ecirc;ncia anest&eacute;sica, n&atilde;o uma prescri&ccedil;&atilde;o r&iacute;gida. Cada caso deve ser individualizado. 
+            </p> 
+        </div> 
+
+        <button class="btn-elegibilidade" onclick="toggleElegibilidade()" style="box-sizing: border-box; width: 100%; min-height: 48px; padding: 12px; background-color: #17a2b8; color: white; border: none; border-radius: 4px; font-size: 15px; cursor: pointer; font-weight: bold; margin-bottom: 20px; display: block; text-align: center; line-height: 1.2;"> 
+            Exibir Crit&eacute;rios de Elegibilidade e Contraindica&ccedil;&otilde;es Completos 
+        </button> 
+
+        <div id="elegibilidadeBox" class="elegibilidade-content" style="display: none; box-sizing: border-box; width: 100%; margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 6px; font-size: 14px; line-height: 1.6; color: #333333;"> 
+            
+            <h3 style="color: #28a745; margin-top: 0; font-size: 1.1em; border-bottom: 2px solid #28a745; padding-bottom: 5px; font-weight: bold;">  PACIENTE ELEG&Iacute;VEL SE: </h3> 
+            <ul style="margin: 10px 0 20px 0; padding-left: 20px;"> 
+                <li><strong>ASA I-III</strong> est&aacute;vel (ASA IV pode ser considerado caso a caso)</li> 
+                <li><strong>Cirurgia eletiva</strong> de pequeno a m&eacute;dio porte (at&eacute; 2-3 horas)</li> 
+                <li><strong>Idade &ge;16 anos</strong> (para protocolo com metadona)</li> 
+                <li><strong>Fun&ccedil;&atilde;o hep&aacute;tica preservada</strong> (lidoca&iacute;na e metadona s&atilde;o metabolizadas no f&iacute;gado)</li> 
+                <li><strong>Fun&ccedil;&atilde;o renal adequada</strong> (clearance >30 mL/min)</li> 
+                <li><strong>Ritmo sinusal normal</strong> sem bloqueios AV avan&ccedil;ados</li> 
+                <li><strong>Press&atilde;o arterial basal controlada</strong> (PAS >100 mmHg)</li> 
+                <li><strong>Frequ&ecirc;ncia card&iacute;ca basal >60 bpm</strong></li> 
+                <li><strong>Aus&ecirc;ncia de contraindica&ccedil;&otilde;es espec&iacute;ficas</strong> (veja abaixo)</li> 
+            </ul> 
+
+            <div style="box-sizing: border-box; background-color: #f8d7da; border-left: 5px solid #dc3545; padding: 15px; margin-bottom: 25px; border-radius: 4px; width: 100%;">
+                <h4 style="color: #721c24; margin-top: 0; margin-bottom: 8px; font-size: 1em; font-weight: bold;">⚠️ EXAME PR&Eacute;-OPERAT&Oacute;RIO OBRIGAT&Oacute;RIO</h4>
+                <ul style="color: #721c24; margin: 0; padding-left: 20px; font-size: 0.95em; line-height: 1.5;">
+                    <li><strong>ECG com medida de QTc em todos os pacientes</strong> candidatos ao protocolo (obrigat&oacute;rio antes de usar metadona).</li>
+                    <li><strong>Se QTc 450-500 ms:</strong> Avaliar causas revers&iacute;veis (hipocalemia, hipomagnesemia, medicamentos) e usar com cautela; corrigir dist&uacute;rbios eletrol&iacute;ticos antes.</li>
+                    <li><strong>Se QTc &gt;500 ms:</strong> Contraindica&ccedil;&atilde;o absoluta para metadona. Usar morfina como alternativa.</li>
+                    <li><strong>Corrigir dist&uacute;rbios eletrol&iacute;ticos:</strong> Hipocalemia, hipomagnesemia e hipocalcemia antes de iniciar o protocolo.</li>
+                    <li style="font-style: italic; color: #6c757d;"><strong>Nota (evid&ecirc;ncia 2026):</strong> Estudos prospectivos recentes (Ramaiah &amp; Kharasch, Br J Anaesth 2026; Koolwijk et al., Reg Anesth Pain Med 2026) mostram que dose &uacute;nica intraoperat&oacute;ria de metadona (10-60 mg) n&atilde;o se associa a prolongamento clinicamente significativo de QTc. O risco relevante concentra-se em uso cr&ocirc;nico em doses altas (&gt;100-150 mg/dia) e em QTc basal &gt;500 ms, situa&ccedil;&otilde;es em que a cautela permanece.</li>
+                </ul>
+            </div>
+
+            <h3 style="color: #dc3545; margin-top: 25px; font-size: 1.1em; border-bottom: 2px solid #dc3545; padding-bottom: 5px; font-weight: bold;">  CONTRAINDICA&Ccedil;&Otilde;ES ABSOLUTAS </h3> 
+            
+            <div style="margin-bottom: 15px;"> 
+                <p style="margin: 8px 0; font-weight: bold; color: #495057;">Para LIDOCA&Iacute;NA intravenosa:</p> 
+                <ul style="margin: 5px 0; padding-left: 20px;"> 
+                    <li>Alergia conhecida a anest&eacute;sicos locais do tipo amida</li> 
+                    <li>Bloqueio AV de 2&ordm; ou 3&ordm; grau sem marca-passo</li> 
+                    <li>S&iacute;ndrome de Wolff-Parkinson-White</li> 
+                    <li>Insufici&ecirc;ncia hep&aacute;tica grave (Child-Pugh C)</li> 
+                    <li>Hist&oacute;ria de convuls&otilde;es n&atilde;o controladas</li> 
+                    <li>Porfiria aguda</li> 
+                </ul> 
+            </div> 
+
+            <div style="margin-bottom: 15px;"> 
+                <p style="margin: 8px 0; font-weight: bold; color: #495057;">Para DEXMEDETOMIDINA:</p> 
+                <ul style="margin: 5px 0; padding-left: 20px;"> 
+                    <li>Bloqueio AV de 2&ordm; ou 3&ordm; grau sem marca-passo</li> 
+                    <li>Bradicardia sinusal grave (&lt;50 bpm) sem marca-passo</li> 
+                    <li>Hipotens&atilde;o n&atilde;o corrigida (PAS &lt;90 mmHg)</li> 
+                    <li>Choque circulat&oacute;rio</li> 
+                    <li>Insufici&ecirc;ncia card&iacute;aca descompensada (NYHA IV)</li> 
+                    <li>S&iacute;ndrome do n&oacute; sinusal</li> 
+                </ul> 
+            </div> 
+
+            <div style="margin-bottom: 15px;"> 
+                <p style="margin: 8px 0; font-weight: bold; color: #495057;">Para KETAMINA:</p> 
+                <ul style="margin: 5px 0; padding-left: 20px;"> 
+                    <li>Esquizofrenia ou psicose activa</li> 
+                    <li>Hipertens&atilde;o intracraniana n&atilde;o controlada</li> 
+                    <li>Glaucoma de &acirc;ngulo fechado agudo</li> 
+                    <li>Doen&ccedil;a cardiovascular grave n&atilde;o controlada (IAM recente &lt;3 meses, angina inst&aacute;vel)</li> 
+                    <li>Aneurisma cerebral ou dissec&ccedil;&atilde;o a&oacute;rtica</li> 
+                    <li>Hipertireoidismo n&atilde;o controlado</li> 
+                </ul> 
+            </div> 
+
+            <div style="margin-bottom: 20px;"> 
+                <p style="margin: 8px 0; font-weight: bold; color: #495057;">Para METADONA:</p> 
+                <ul style="margin: 5px 0; padding-left: 20px;"> 
+                    <li><strong style="color: #dc3545;">QTc basal &gt;500 ms</strong> (contraindica&ccedil;&atilde;o absoluta - risco de <i>torsades de pointes</i>)</li> 
+                    <li>S&iacute;ndrome do QT longo cong&ecirc;nito</li>
+                    <li>Uso concomitante de m&uacute;ltiplos f&aacute;rmacos que prolongam QTc (ver intera&ccedil;&otilde;es medicamentosas)</li> 
+                    <li>Hipocalemia, hipomagnesemia ou hipocalcemia n&atilde;o corrigidas</li>
+                    <li>&Iacute;leo paral&iacute;tico ou obstru&ccedil;&atilde;o intestinal conhecida</li> 
+                    <li>Choque circulat&oacute;rio</li> 
+                    <li>Depress&atilde;o respirat&oacute;ria grave pr&eacute;-existente</li> 
+                    <li>Insufici&ecirc;ncia hep&aacute;tica descompensada (Child-Pugh C)</li> 
+                    <li style="list-style-type: none; margin-left: -20px; margin-top: 5px; font-style: italic; color: #6c757d;"><strong>Nota:</strong> Se utilizar metadona IV (n&atilde;o oral), aten&ccedil;&atilde;o ao preservativo clorobutanol que potencializa o prolongamento de QTc.</li>
+                </ul> 
+            </div> 
+
+            <h3 style="color: #fd7e14; margin-top: 25px; font-size: 1.1em; border-bottom: 2px solid #fd7e14; padding-bottom: 5px; font-weight: bold;"> [!] USAR COM CAUTELA (Contraindica&ccedil;&otilde;es Relativas) </h3> 
+            <ul style="margin: 10px 0 20px 0; padding-left: 20px;"> 
+                <li><strong>Idade >75 anos:</strong> Doses j&aacute; ajustadas automaticamente pela calculadora</li> 
+                <li><strong>Insufici&ecirc;ncia hep&aacute;tica moderada:</strong> Reduzir lidoca&iacute;na e evitar metadona</li> 
+                <li><strong>Insufici&ecirc;ncia renal (Cr >2 mg/dL):</strong> Reduzir metadona (metab&oacute;litos ativos acumulam)</li> 
+                <li><strong>Diabetes mellitus:</strong> Dexmedetomidina pode causar hipotens&atilde;o mais pronunciada</li> 
+                <li><strong>Hipertens&atilde;o cr&ocirc;nica:</strong> Monitorar PA rigorosamente com ketamina e dexmedetomidina</li> 
+                <li><strong>Doen&ccedil;a coronariana est&aacute;vel:</strong> Avaliar caso a caso, cautela com ketamina</li> 
+                <li><strong>Arritmias controladas:</strong> ECG pr&eacute;-operat&oacute;rio obrigat&oacute;rio</li> 
+                <li><strong>Bloqueio AV de 1&ordm; grau:</strong> N&atilde;o &eacute; contraindica&ccedil;&atilde;o absoluta, mas requer ECG cont&iacute;nuo rigoroso durante infus&atilde;o de lidoca&iacute;na e dexmedetomidina</li>
+                <li><strong>QTc 450-500 ms:</strong> Cautela com metadona (dose &uacute;nica intraoperat&oacute;ria n&atilde;o prolonga QTc de forma clinicamente relevante, mas evitar associa&ccedil;&atilde;o com outros f&aacute;rmacos que prolongam QTc)</li> 
+                <li><strong>Uso de betabloqueadores ou bloqueadores de canal de Ca++:</strong> Risco aumentado de bradicardia com dexmedetomidina</li> 
+                <li><strong>Hist&oacute;ria de abuso de subst&acirc;ncias:</strong> Cautela com ketamina (risco de dissocia&ccedil;&atilde;o) e metadona</li> 
+                <li><strong>Transtornos de ansiedade graves:</strong> Evitar ketamina (rea&ccedil;&otilde;es psicomim&eacute;ticas)</li> 
+                <li><strong>Gravidez:</strong> Avaliar risco-benef&iacute;cio individual</li> 
+                <li><strong>Obesidade m&oacute;rbida (IMC >40):</strong> Usar massa magra para c&aacute;lculos (j&aacute; implementado)</li> 
+            </ul> 
+
+            <h3 style="color: #6c757d; margin-top: 25px; font-size: 1.1em; border-bottom: 2px solid #6c757d; padding-bottom: 5px; font-weight: bold;">  INTERA&Ccedil;&Otilde;ES MEDICAMENTOSAS IMPORTANTES </h3> 
+            
+            <div style="margin-bottom: 15px;"> 
+                <p style="margin: 8px 0; font-weight: bold; color: #495057;">Com DEXMEDETOMIDINA (risco de bradicardia grave):</p> 
+                <ul style="margin: 5px 0; padding-left: 20px;"> 
+                    <li>Betabloqueadores (metoprolol, atenolol, propranolol)</li> 
+                    <li>Bloqueadores de canal de c&aacute;lcio (diltiazem, verapamil)</li> 
+                    <li>Digoxina</li> 
+                    <li>Clonidina ou outros agonistas &alpha;2</li> 
+                </ul> 
+            </div> 
+            
+            <div style="margin-bottom: 15px;"> 
+                <p style="margin: 8px 0; font-weight: bold; color: #495057;">Com METADONA (risco de prolongamento QTc):</p> 
+                <ul style="margin: 5px 0; padding-left: 20px;"> 
+                    <li><strong>F&aacute;rmacos que prolongam QTc:</strong> antiarr&iacute;tmicos classe IA/III (amiodarona, sotalol, quinidina), antipsic&oacute;ticos (haloperidol, quetiapina, droperidol), antidepressivos tric&iacute;clicos, macrol&iacute;deos (azitromicina, eritromicina), fluoroquinolonas (levofloxacino, ciprofloxacino), ondansetrona, metoclopramida</li> 
+                    <li><strong>Dist&uacute;rbios eletrol&iacute;ticos:</strong> hipocalemia, hipomagnesemia, hipocalcemia (corrigir antes de usar metadona)</li>
+                    <li><strong>Inibidores de CYP3A4:</strong> aumentam n&iacute;veis de metadona (cetoconazol, fluconazol, eritromicina, ritonavir) - risco de toxicidade</li> 
+                    <li><strong>Indutores de CYP3A4:</strong> reduzem efic&aacute;cia (rifampicina, fenito&iacute;na, carbamazepina) - pode haver falha analg&eacute;sica</li> 
+                </ul> 
+            </div> 
+            
+            <div style="margin-bottom: 20px;"> 
+                <p style="margin: 8px 0; font-weight: bold; color: #495057;">Com KETAMINA:</p> 
+                <ul style="margin: 5px 0; padding-left: 20px;"> 
+                    <li>Teofilina (risco de convuls&otilde;es)</li> 
+                    <li>Levotiroxina em doses altas (taquicardia)</li> 
+                </ul> 
+            </div> 
+
+            <h3 style="color: #17a2b8; margin-top: 25px; font-size: 1.1em; border-bottom: 2px solid #17a2b8; padding-bottom: 5px; font-weight: bold;"> [!] MONITORIZA&Ccedil;&Acirc;O M&Iacute;NIMA OBRIGAT&Oacute;RIA </h3> 
+            <ul style="margin: 10px 0 20px 0; padding-left: 20px; line-height: 1.6;"> 
+                <li><strong>ECG cont&iacute;nuo de 12 deriva&ccedil;&otilde;es ou no m&iacute;nimo 5 deriva&ccedil;&otilde;es</strong> (obrigat&oacute;rio para dexmedetomidina + lidoca&iacute;na + metadona) - monitorar QTc em tempo real se dispon&iacute;vel</li> 
+                <li><strong>PA n&atilde;o invasiva a cada 3-5 minutos</strong> (out invasiva se ASA III-IV inst&aacute;vel)</li> 
+                <li><strong>SpO2 e EtCO2</strong> cont&iacute;nuos</li> 
+                <li><strong>Monitoriza&ccedil;&atilde;o da atividade cerebral (EEG processado: BIS, SedLine ou equivalente)</strong> se for realizada TIVA</li> 
+                <li><strong>TOF quantitativo</strong> (para uso racional de sugammadex e evitar bloqueio residual)</li> 
+                <li><strong>Temperatura</strong> central ou perif&eacute;rica</li> 
+                <li><strong>Drogas de resgate preparadas e checadas:</strong>
+                    <ul style="margin: 5px 0; padding-left: 20px;">
+                        <li>Atropina 0,5-1 mg (para bradicardia)</li>
+                        <li>Vasopressor (efedrina 5-10 mg ou fenilefrina 50-100 mcg)</li>
+                        <li>Emuls&atilde;o lip&iacute;dica 20% (Intralipid&reg; ou similar) para toxicidade por anest&eacute;sico local - dose: 1,5 mL/kg em bolus, seguido de infus&atilde;o 0,25 mL/kg/min</li>
+                        <li>Naloxona (para revers&atilde;o de opioide se necess&aacute;rio)</li>
+                    </ul>
+                </li> 
+            </ul> 
+
+            <h3 style="color: #6c757d; margin-top: 25px; font-size: 1.1em; border-bottom: 2px solid #6c757d; padding-bottom: 5px; font-weight: bold;">  EXEMPLOS PR&Aacute;TICOS DE ELEGIBILIDADE </h3> 
+            
+            <div style="box-sizing: border-box; background-color: #d4edda; border-left: 4px solid #28a745; padding: 12px; margin: 12px 0; border-radius: 4px; width: 100%;"> 
+                <p style="margin: 0 0 5px 0; font-weight: bold; color: #155724;">[+] PACIENTE IDEAL (ELEG&Iacute;VEL):</p> 
+                <p style="margin: 0; color: #155724; font-size: 0.9em; line-height: 1.4;"> 
+                    Paciente, 45 anos, ASA II (hipertens&atilde;o controlada) &bull; Colecistectomia VDL eletiva &bull; FC 72 bpm, PA 130/80 mmHg &bull; Fun&ccedil;&atilde;o hep&aacute;tica/renal normal &bull; ECG: ritmo sinusal, QTc 420 ms<br> 
+                    <strong>&rarr; ELEG&Iacute;VEL para t&eacute;cnica completa</strong> 
+                </p> 
+            </div> 
+            
+            <div style="box-sizing: border-box; background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; margin: 12px 0; border-radius: 4px; width: 100%;"> 
+                <p style="margin: 0 0 5px 0; font-weight: bold; color: #856404;">[!] PACIENTE COM CAUTELA (ELEG&Iacute;VEL COM AJUSTES):</p> 
+                <p style="margin: 0; color: #856404; font-size: 0.9em; line-height: 1.4;"> 
+                    Paciente, 78 anos, ASA III (DM2, HAS, DAC est&aacute;vel) &bull; Hernioplastia inguinal &bull; FC 58 bpm, PA 145/85 mmHg, em uso de metoprolol &bull; QTc 465 ms<br> 
+                    <strong>&rarr; ELEG&Iacute;VEL com ajustes:</strong> doses reduzidas (j&aacute; autom&aacute;tico), considerar omitir metadona (QTc lim&iacute;trofe), ter atropina preparada, monitoriza&ccedil;&atilde;o rigorosa 
+                </p> 
+            </div> 
+            
+            <div style="box-sizing: border-box; background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 12px; margin: 12px 0; border-radius: 4px; width: 100%;"> 
+                <p style="margin: 0 0 5px 0; font-weight: bold; color: #721c24;">[-] PACIENTE CONTRAINDICADO (N&Atilde;O ELEG&Iacute;VEL):</p> 
+                <p style="margin: 0; color: #721c24; font-size: 0.9em; line-height: 1.4;"> 
+                    Paciente, 82 anos, ASA IV &bull; Cirurgia de urg&ecirc;ncia, choque s&eacute;ptico &bull; FC 48 bpm, bloqueio AV 2&ordm; grau Mobitz II, PA 85/50 mmHg &bull; Insufici&ecirc;ncia hep&aacute;tica Child B &bull; ECG: QTc 510 ms<br> 
+                    <strong>&rarr; N&Atilde;O ELEG&Iacute;VEL:</strong> m&uacute;ltiplas contraindica&ccedil;&otilde;es absolutas (bradicardia grave, bloqueio AV avan&ccedil;ado, hipotens&atilde;o refrat&aacute;ria, disfun&ccedil;&atilde;o hep&aacute;tica, QTc &gt;500 ms, instabilidade hemodin&acirc;mica) 
+                </p> 
+            </div> 
+        </div> 
+
+        <button id="btnIrParaCalculos" class="btn-avancar" onclick="abrirCalculadora()">Fazer os C&aacute;lculos &rarr;</button>
     </div>
-
-    <div id="pediatriaBox" class="pediatria-box">
-        <b style="color: var(--yellow); font-size: 1.2em; text-transform: uppercase;">Aviso de Segurança Clínica</b><br><br>
-        <span style="color: #fff; font-weight: bold; font-size: 1.1em;">Indicada indução inalatória ou seguir um protocolo de anestesia pediátrica.</span><br><br>
-        <i style="color: #8b949e; font-size: 13px;">* Os modelos farmacocinéticos de infusão contínua TCI e o manejo multimodal de grandes volumes deste painel são calibrados exclusivamente para pacientes acima de 10 anos.</i>
-    </div>
-
-    <div class="strategy-box" id="strategyBox">
-        <label id="labelConfigEstrategia">2. Configurações da Estratégia</label>
+    <div id="secaoCalculadora" class="calculadora-section">
+        <div class="form-group">
+            <label for="peso">Peso Real (kg):</label>
+            <input type="number" id="peso" step="0.1" value="70">
+        </div>
         
-        <div class="grid-inputs">
-            <div>
-                <label>Duração Prevista</label>
-                <select id="duracaoCirurgia" onchange="atualizarDinamica()">
-                    <option value="curta">Até 2 horas</option>
-                    <option value="longa">Maior que 2 horas (Bariátrica / Grandes Portes)</option>
-                </select>
+        <div class="form-group">
+            <label for="altura">Altura (cm):</label>
+            <input type="number" id="altura" value="170">
+        </div>
+        
+        <div class="form-group">
+            <label for="idade">Idade (anos):</label>
+            <input type="number" id="idade" value="40">
+        </div>
+        
+        <div class="form-group">
+            <label for="sexo">Sexo:</label>
+            <select id="sexo">
+                <option value="M" selected>Masculino</option>
+                <option value="F">Feminino</option>
+            </select>
+        </div>
+        
+        <button onclick="calcular(true)">Calcular e Atualizar Roteiro</button>
+
+        <div id="resultados" class="results-section">
+            <div id="alertaIdade" class="alerta-idade"></div>
+            <div id="alertaAinh" class="alerta-ainh"></div>
+            <div id="alertaPesoEstimado" class="alerta-idade" style="display:none; background-color:#d1ecf1; color:#0c5460; border-left-color:#bee5eb;"></div>
+
+            <div class="results-title">Dados Antropométricos</div>
+            <div class="table-responsive">
+                <table>
+                    <tr><td>IMC:</td><td><span id="resIMC"></span> kg/m²</td></tr>
+                    <tr><td>Peso Ideal (Devine):</td><td><span id="resPI"></span> kg</td></tr>
+                    <tr><td>Massa Magra (Boer):</td><td><span id="resMM" style="font-weight: bold; color: #0056b3;"></span> kg</td></tr>
+                    <tr><td>Peso Ajustado (25%):</td><td><span id="resPA"></span> kg</td></tr>
+                </table>
             </div>
-            <div>
-                <label>Via de Manutenção</label>
-                <select id="viaManutencao" onchange="atualizarDinamica()">
-                    <option value="propofol">TIVA (Propofol Eleveld Ce)</option>
-                    <option value="sevoflurano">PIVA (Sevoflurano CAM)</option>
-                </select>
+
+            <div class="results-title">
+                <span>Ativar Infusão Transoperatória Contínua</span>
+            </div>
+            <div style="font-size: 0.82em; color: #666; margin-top: -8px; margin-bottom: 10px;">Indicado para cirurgias com previsão de mais de 3h</div>
+            <div class="selector-infusao">
+                <button class="btn-select" id="btnLidoDex" onclick="mudarInfusao('LIDODEX')">Lido-Dex</button>
+                <button class="btn-select" id="btnLidoKetoDex" onclick="mudarInfusao('LIDOKETODEX')">Lido-Keto-Dex</button>
+            </div>
+
+            <div class="results-title">Sugestão de Doses e Volumes (Massa Magra)</div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Fármaco / Conc.</th>
+                            <th style="width: 20%;">Alvo Utilizado</th>
+                            <th style="width: 20%;">Dose Corrig.</th>
+                            <th style="width: 20%;">Volume Prático</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="linhaLido">
+                            <td>
+                                <strong>Lidocaína 2% (s/ vaso)</strong>
+                                <span class="info-diluicao">20 mg/mL (Bolus Indução, base: peso ideal) — infundir em 10 min, NÃO em bolus rápido</span>
+                            </td>
+                            <td><span id="alvoLido">1.5</span> mg/kg (peso ideal)</td>
+                            <td><span id="doseLido"></span> mg</td>
+                            <td class="highlight-ml"><span id="uLido"></span> mL</td>
+                        </tr>
+
+                        <tr id="linhaInfusaoContinua" style="background-color: #fdfffe; border-left: 4px solid #0056b3; display: none;">
+                            <td>
+                                <strong id="nomeInfusao">Infusão Lido-Dex</strong>
+                                <span class="info-diluicao" id="descInfusao">Lido 300mg + Dex 50mcg em SF (Total: 50mL)</span>
+                                <span class="desmame-info" id="desmameInfusao">Desligar 1h antes do final</span>
+                            </td>
+                            <td><span id="regraInfusao" style="font-weight: bold; color: #0056b3;">PA / 4</span></td>
+                            <td><span id="pesoUsadoInfusao">--</span></td>
+                            <td class="highlight-ml"><span id="valInfusao"></span> mL/h</td>
+                        </tr>
+
+                        <tr id="linhaDex">
+                            <td>
+                                <strong>Dexmedetomidina (Ataque)</strong>
+                                <span class="info-diluicao">100 mcg/mL</span>
+                            </td>
+                            <td><span id="alvoDex">0,33</span> mcg/kg</td>
+                            <td><span id="doseDex"></span> mcg</td>
+                            <td class="highlight"><span id="uDex"></span> U</td>
+                        </tr>
+                        <tr id="linhaKet">
+                            <td>
+                                <strong>Ketamina (Ataque)</strong>
+                                <span class="info-diluicao">50 mg/mL</span>
+                            </td>
+                            <td><span id="alvoKet">0,17</span> mg/kg</td>
+                            <td><span id="doseKet"></span> mg</td>
+                            <td class="highlight"><span id="uKet"></span> U</td>
+                        </tr>
+                        
+                        <tr id="linhaMetadona">
+                            <td>
+                                <strong>Metadona</strong>
+                                <span class="info-diluicao">10 mg/mL</span>
+                            </td>
+                            <td><span id="alvoMet">0,15 - 0,20</span> mg/kg</td>
+                            <td><span id="doseMet"></span> mg</td>
+                            <td class="highlight-ml"><span id="uMet"></span> mL</td>
+                        </tr>
+                        
+                        <tr id="linhaMorfina" style="display: none;">
+                            <td>
+                                <strong>Metadona (Dose Única Pediátrica)</strong>
+                                <span class="info-diluicao">10 mg/mL</span>
+                            </td>
+                            <td>0,10 mg/kg</td>
+                            <td><span id="doseMorf"></span> mg</td>
+                            <td class="highlight"><span id="uMorf"></span> U</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="results-title">
+                <span>Guia de Conduta Multimodal Simplificado</span>
+                <button class="btn-toggle-roteiro" onclick="toggleRoteiro()" id="btnToggleRoteiro">Mostrar Roteiro</button>
+            </div>
+            
+            <div class="timeline-container" id="roteiroContainer">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-title">1. Indução Anestésica Dinâmica</div>
+                        <div class="timeline-desc">
+                            <span id="descIndPadrao">
+                            Administrar <span class="badge-drug">Lidocaína 2%: <span class="badge-dinamico" id="rotLido"></span> mL</span> para proteção simpática/dor à injeção.<br>
+                            Injetar <span class="badge-drug">Propofol: <span class="badge-dinamico" id="rotProp"></span> mg</span> + <span class="badge-drug">Rocurônio: <span class="badge-dinamico" id="rotRoc"></span> mg</span>.<br>
+                            Remifentanil TCI em 4 ng/mL até a intubação orotraqueal, reduzindo o alvo para cerca de 2 ng/mL logo após fixar a via aérea. Administrar Fentanil na indução se não for usar o Remifentanil.
+                            </span>
+                            <span id="descIndPediatrica" style="display:none;">
+                            Indução inalatória com Sevoflurano. Ao estabelecer o acesso venoso, administrar lentamente os coadjuvantes — <span class="badge-drug">Dexmedetomidina: <span class="badge-dinamico" id="rotDexPed"></span> mcg</span> + <span class="badge-drug">Ketamina: <span class="badge-dinamico" id="rotKetPed"></span> mg</span> — em aproximadamente 5 minutos, antes da intubação.<br>
+                            Logo após a intubação, prosseguir com a anestesia padrão (ventilação controlada ou espontânea).<br>
+                            Realizar a analgesia multimodal — <span class="badge-drug">Dipirona</span>, <span class="badge-drug">Dexametasona</span> e <span class="badge-drug">AINH</span> — conforme protocolo do serviço, e aplicar a <span class="badge-drug">Metadona (dose única pediátrica): <span class="badge-dinamico" id="rotMorfPed"></span> mg</span> — não misturar.
+                            </span>
+                        </div>
+                    </div>
+                    <div class="timeline-item" id="timelineItemPos2">
+                        <div class="timeline-title">2. Pós-Indução Imediata (Adjuvantes Calculados)</div>
+                        <div class="timeline-desc">
+                            Iniciar as doses adjuvantes sugeridas de <span class="badge-drug">Dexmedetomidina: <span class="badge-dinamico" id="rotDex"></span> mcg</span> e <span class="badge-drug">Ketamina: <span class="badge-dinamico" id="rotKet"></span> mg</span>, em infusão durante 10 min.<br>
+                            Logo a seguir, <span id="rotMetTexto">aplicar a dose de <span class="badge-drug">Metadona: <span class="badge-dinamico" id="rotMet"></span> mL</span> sugerida (Range de escolha clínica) — não misturar.</span>
+                            <span id="rotMorfTexto" style="display:none;">aplicar a dose calculada de <span class="badge-drug">Metadona (dose única pediátrica): <span id="rotMorf"></span> mg</span> — não misturar.</span><br>
+                            Antes da incisão, complementar com <span class="badge-drug">analgesia multimodal: AINH + Dipirona + Dexametasona</span>.
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item" id="passoRoteiroInfusao" style="display: none;">
+                        <div class="timeline-title">3. Estabilização e Início da Infusão</div>
+                        <div class="timeline-desc">
+                            ⚠️ <strong>Aguardar a estabilização hemodinâmica</strong> pós-indução do paciente.<br>
+                            Assim que estável, iniciar imediatamente a bomba de infusão contínua selecionada na velocidade de <span class="badge-drug"><span id="rotVazaoInf"></span> mL/h</span>.
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-title">4. Manutenção Perioperatória</div>
+                        <div class="timeline-desc">
+                            <strong>Plano Anestésico:</strong> Manter com <span class="badge-drug">Sevoflurano 0,6 a 0,8 até 1 CAM</span> OU <span class="badge-drug">Propofol venoso</span> guiado por BIS / SedLine.<br>
+                            <strong>Modulação Hemodinâmica:</strong> Ajustar o Remifentanil entre <span class="badge-drug">2,5 e 4 ng/mL</span> guiado por FC e PA durante estímulo cirúrgico.<br>
+                            <strong>Manutenção de Bloqueio (~1h):</strong> Avaliar repique de Rocurônio. Se indicado, administrar dose econômica de <span class="badge-drug">10 a 20 mg</span>.
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-title">5. Desmame e Fechamento de Pele</div>
+                        <div class="timeline-desc">
+                            <span id="descDesmameBomba" style="display:none;"><strong>Programação do Desmame da Infusão:</strong> Desligar a bomba no início do fechamento da aponeurose (30-60 min antes do final da cirurgia).<br></span>
+                            No início do fechamento de aponeurose/pele, reduza o Remifentanil escalonado para <span class="badge-drug">1 ng/mL</span>.<br>
+                            <strong>Zerar Sevoflurano:</strong> Feche o vaporizador mantendo o fluxo baixo de gases para a CAM decair de forma suave e espontânea.
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-title">6. Despertar Elegante e Critério de Sugammadex</div>
+                        <div class="timeline-desc">
+                            <strong>Nos últimos pontos:</strong> Ajustar o alvo do Remifentanil em <span class="badge-drug">0,5 ng/mL</span> e manter até extubar (evita tosse e promove tolerância perfeita ao tubo).<br>
+                            <strong>Término do ponto:</strong> Abrir fluxo de gases frescos para <span class="badge-drug">6 L/min</span> para lavar rápido mantendo leitura confiável de Fi/Fe.<br>
+                            <strong>Reversão Segura:</strong> Injetar o Sugammadex <u>apenas quando a fração expirada (Fe) do Sevo atingir 0,2%</u>. Evita o despertar em pânico. O paciente acordará calmo e obedecendo comandos em minutos.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-bibliografia" onclick="toggleSugamadex()" style="background-color: #17a2b8;">Reversão do Rocurônio com SUGAMADEX (conforme SBA)</button>
+            <div id="sugamadexBox" class="bibliografia-content">
+                <strong>Protocolo de Reversão com Sugamadex</strong>
+                <div style="font-size: 0.85em; color: #666; margin-bottom: 10px;">Diretrizes e Recomendações Institucionais baseadas na SBA</div>
+
+                <p style="font-weight: bold; color: #495057; margin: 12px 0 5px 0;">1. Critérios de Dosagem por Grau de Bloqueio Neuromuscular (BNM)</p>
+                <div class="table-responsive">
+                    <table style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th>Grau do Bloqueio</th>
+                                <th>Critério Objetivo (Monitorização)</th>
+                                <th>Dose Recomendada</th>
+                                <th>Base de Cálculo e Alvo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Moderado</strong></td>
+                                <td>Presença de pelo menos 2 respostas (T2) no TOF</td>
+                                <td><strong>2 mg/kg</strong></td>
+                                <td rowspan="2">Calcular sempre pelo Peso Corporal Real.<br>Alvo para extubação segura: TOF ratio ≥ 0,9.</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Profundo</strong></td>
+                                <td>TOF = 0 respostas, mas com ≥ 1 a 2 respostas na Contagem Pós-Tetânica (PTC)</td>
+                                <td><strong>4 mg/kg</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Imediato (Resgate)</strong></td>
+                                <td>Reversão emergencial cerca de 3 min após indução com Rocurônio (1,2 mg/kg)</td>
+                                <td><strong>16 mg/kg</strong></td>
+                                <td>Peso Real. Cenário de "Não intubo, não ventilo".</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p style="font-weight: bold; color: #495057; margin: 15px 0 5px 0;">2. Diretrizes Práticas de Segurança (Recomendações SBA)</p>
+                <ul>
+                    <li><strong>Monitorização Obrigatória:</strong> o sugamadex não elimina a necessidade do estimulador de nervo periférico. Utilizar obrigatoriamente monitorização quantitativa (aceleromiografia ou eletromiografia) para confirmar TOF ≥ 0,9 antes da extubação. Se a monitorização não for quantitativa, manter vigilância clínica rigorosa na SRPA.</li>
+                    <li><strong>Risco de Recurarização:</strong> subdosagens (ex: uso rotineiro de doses fixas como 100 mg ou 200 mg sem critério de peso e TOF) causam o retorno do bloqueio neuromuscular na SRPA devido à redistribuição do rocurônio livre.</li>
+                    <li><strong>Ajuste no Paciente Obeso:</strong> em pacientes com obesidade mórbida (IMC ≥ 40), basear o cálculo da dose em até 140% do Peso Corporal Ideal (PCI) ou guiar estritamente por monitorização quantitativa em tempo real para evitar superdosagem.</li>
+                    <li><strong>Especificidade Química:</strong> o sugamadex age exclusivamente sobre relaxantes esteroides (Rocurônio e Vecurônio). Não possui qualquer efeito sobre benzilisoquinolínicos (Cisatracúrio e Atracúrio).</li>
+                    <li><strong>Necessidade de Rebloqueio:</strong> caso o paciente necessite de reoperação imediata após o uso de sugamadex, utilizar relaxantes de classes diferentes: Cisatracúrio, Atracúrio ou Succinilcolina. Se for indispensável usar Rocurônio, aguardar o tempo de depuração renal ou utilizar doses maiores sob monitorização contínua.</li>
+                </ul>
+
+                <p style="font-size: 0.85em; color: #856404; background-color: #fff3cd; padding: 10px; border-radius: 4px; border-left: 4px solid #ffeeba; margin-top: 12px;">
+                    <strong>Nota de Segurança:</strong> a facilidade posológica do sugamadex não substitui o julgamento clínico. A alta da SRPA exige reversão completa confirmada (TOF ratio ≥ 0,9), estabilidade hemodinâmica e padrão respiratório espontâneo adequado.
+                </p>
+            </div>
+
+            <button class="btn-bibliografia" onclick="toggleBibliografia()">Ver Referências Bibliográficas e Links</button>
+            <div id="bibliografiaBox" class="bibliografia-content">
+                <strong>Literatura Científica Consultada:</strong>
+                <ul>
+                    <li><strong>Massa Magra & Farmacocinética de Adjuvantes:</strong> Ingrande J, Lemmens HJ. <i>Dosing of anaesthetics in obesity</i>. Best Pract Res Clin Anaesthesiol. 2010.</li>
+                    <li><strong>Ajustes de Doses de Indução no Idoso:</strong> National Library of Medicine. <i>Anesthesia in the elderly patient</i>. BJA: British Journal of Anaesthesia.</li>
+                    <li><strong>Uso Clínico e Alvos de Metadona Transoperatória:</strong> Murphy GS, et al. <i>Intraoperative methadone for postoperative pain control: a systematic review</i>. Anesthesia & Analgesia.</li>
+                    <li><strong>Critérios de Segurança Geriátrica (AINHs):</strong> American Geriatrics Society. <i>AGS Beers Criteria for Potentially Inappropriate Medication Use in Older Adults</i>.</li>
+                    <li><strong>Estratégia de Remifentanil Residual na Extubação:</strong> Cavaliere F, et al. <i>Remifentanil TCI to smoothly manage emergence and tracheal extubation</i>. Minerva Anestesiologica.</li>
+                    <li><strong>Seguran&ccedil;a Card&iacute;aca da Metadona e Monitoriza&ccedil;&atilde;o de QTc:</strong> Chou R, et al. <i>Methadone Safety: A Clinical Practice Guideline from the American Pain Society</i>. J Pain. 2014.</li>
+                    <li><strong>Prolongamento de QTc e Torsades de Pointes com Metadona:</strong> Krantz MJ, et al. <i>Cardiovascular Complications of Opioid Use: JACC State-of-the-Art Review</i>. J Am Coll Cardiol. 2021.</li>
+                    <li><strong>Diretrizes de Monitorização e Antagonismo do Bloqueio Neuromuscular:</strong> Thilen SR, et al. <i>2023 American Society of Anesthesiologists Practice Guidelines for Monitoring and Antagonism of Neuromuscular Blockade</i>. Anesthesiology. 2023;138(1):13–41.</li>
+                    <li><strong>Bloqueio Neuromuscular Residual e Tardio na SRPA:</strong> Silva CHR, et al. <i>Bloqueio neuromuscular residual e bloqueio neuromuscular tardio na sala de recuperação pós-anestésica</i>. BJAN. 2021;71(1):38–43.</li>
+                    <li><strong>Sugamadex por Peso Ideal vs. Corrigido em Cirurgia Bariátrica:</strong> Duarte NMC, et al. <i>Uso de sugamadex pelo peso corporal ideal versus corrigido em 20% e 40% em cirurgia bariátrica</i>. BJAN. 2018;68(3):219–224.</li>
+                    <li><strong>Consenso Internacional sobre Lidoca&iacute;na IV Perioperat&oacute;ria:</strong> Foo I, Macfarlane AJR, Srivastava D, et al. <i>The Use of Intravenous Lidocaine for Postoperative Pain and Recovery: International Consensus Statement on Efficacy and Safety</i>. Anaesthesia. 2021;76(2):238-250. doi:10.1111/anae.15270.</li>
+                    <li><strong>Metadona Intraoperat&oacute;ria (dose &uacute;nica) e QTc &ndash; evid&ecirc;ncia atual:</strong> Ramaiah VK, Kharasch ED. <i>Single-Dose Intraoperative Methadone and QTc Interval: A Prospective Observational Cohort Investigation</i>. Br J Anaesth. 2026. doi:10.1016/j.bja.2026.04.072.</li>
+                    <li><strong>Metadona Intraoperat&oacute;ria e Prolongamento de QTc &ndash; an&aacute;lise pareada por escore de propens&atilde;o:</strong> Koolwijk J, Babac S, Van 't Veer M, et al. <i>Association Between Intraoperative Methadone Administration and QTc Interval Prolongation: A Propensity Score-Matched Analysis</i>. Reg Anesth Pain Med. 2026. doi:10.1136/rapm-2025-107331.</li>
+                </ul>
             </div>
         </div>
-
-        <div id="manualBox" class="dose-manual-box" style="display: block;">
-            <label style="color: var(--red); font-weight: bold;">Indução Estruturada (Esquema Mode):</label>
-            <div id="calculoDosesManual" style="margin-top: 5px;"></div>
-        </div>
-
-        <div id="adjuvantesTempoBox" class="purple-box">
-            <b style="color: var(--purple);">Manejo de Adjuvantes do Esquema (Lido + Dex):</b><br>
-            <span id="textoAdjuvantesTempo"></span>
-        </div>
-
-        <div id="opioideLongaBox" class="orange-box">
-            <b style="color: var(--orange);">Opioide de Longa Duração (Preemptivo):</b><br>
-            <span id="calculoOpioideLonga"></span>
-        </div>
-
-        <div class="info-box">
-            <b style="color: var(--blue);">Coadjuvantes Multimodais (Administrar obrigatoriamente ANTES da incisão):</b><br>
-            <div id="textoCoadjuvantesGerais"></div>
-        </div>
-
-        <button class="btn btn-green" onclick="gerarGrade()">Gerar Plano de Manutenção e Despertar</button>
     </div>
-
-    <div id="despertarEleganteBox" class="elegante-box"></div>
-
-    <div id="resFinal" class="table-container"></div>
-    <div id="bordaoFinal" class="bordao">EXCELENTE!</div>
 </div>
 
 <script>
-function calcularPesos() {
-    let p = parseFloat(document.getElementById('p').value);
-    let h = parseFloat(document.getElementById('h').value);
-    let i = parseFloat(document.getElementById('i').value);
-    let s = document.getElementById('s').value;
+let tipoInfusaoAtual = 'NENHUM';
 
-    let imc = p / Math.pow(h/100, 2);
-    let pIdeal = (s === 'M') ? 50 + 0.9 * (h - 152.4) : 45.5 + 0.9 * (h - 152.4);
-    
-    let pSugerido;
-    if (i < 12) pSugerido = p;
-    else if (imc > 30) pSugerido = pIdeal + 0.4 * (p - pIdeal);
-    else pSugerido = p;
+function toggleElegibilidade() { 
+    const box = document.getElementById('elegibilidadeBox'); 
+    const btn = document.querySelector('.btn-elegibilidade'); 
+    if (box.style.display === 'none' || box.style.display === '') { 
+        box.style.display = 'block'; 
+        btn.innerText = 'Ocultar Crit\u00E9rios de Elegibilidade'; 
+    } else { 
+        box.style.display = 'none'; 
+        btn.innerText = 'Exibir Crit\u00E9rios de Elegibilidade e Contraindica\u00E7\u00F5es Completos'; 
+    } 
+}
 
-    document.getElementById('resSugerido').innerText = pSugerido.toFixed(1);
-    
-    // BIFURCAÇÃO SE SEJA CRIANÇA (IDADE <= 10)
-    if(i <= 10) {
-        document.getElementById('weightResults').style.display = 'none';
-        document.getElementById('strategyBox').style.display = 'none';
-        document.getElementById('despertarEleganteBox').style.display = 'none';
-        document.getElementById('resFinal').innerHTML = "";
-        document.getElementById('bordaoFinal').style.display = 'none';
-        
-        document.getElementById('pediatriaBox').style.display = 'block';
+function abrirCalculadora() {
+    const secaoCalc = document.getElementById('secaoCalculadora');
+    secaoCalc.style.display = 'block';
+    secaoCalc.scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleRoteiro() {
+    const container = document.getElementById('roteiroContainer');
+    const btn = document.getElementById('btnToggleRoteiro');
+    if (container.style.display === 'none' || container.style.display === '') {
+        container.style.display = 'block';
+        btn.innerText = 'Ocultar Roteiro';
     } else {
-        document.getElementById('pediatriaBox').style.display = 'none';
-        document.getElementById('weightResults').style.display = 'grid';
-        document.getElementById('strategyBox').style.display = 'flex';
-        atualizarDinamica();
+        container.style.display = 'none';
+        btn.innerText = 'Mostrar Roteiro';
     }
 }
 
-function atualizarDinamica() {
-    let pB = parseFloat(document.getElementById('resSugerido').innerText);
-    let idade = parseFloat(document.getElementById('i').value);
-    let duracao = document.getElementById('duracaoCirurgia').value;
-    let via = document.getElementById('viaManutencao').value;
-
-    let unidadesUnificadas = (pB / 3).toFixed(0);
-
-    let fIdadeEleveld = idade > 45 ? Math.exp(-0.005 * (idade - 45)) : 1.0;
-    let mkgP = idade > 70 ? 1.0 : 1.5; 
-    let prop = pB * mkgP;
-    let rocu = pB * 0.6;
-    
-    let ceInducaoRemi = 5.5 * fIdadeEleveld; 
-    let alo = Math.pow(pB / 70, 0.75);
-    let vazaoAtaqueRemi = ((ceInducaoRemi * 0.045) * 70 * alo * 60) / 40;
-
-    let orientacaoModelos = "";
-    if (via === 'propofol') {
-        orientacaoModelos = `• <b>Bomba Propofol TCI:</b> Configurar modelo <b>Schnider (Modo Efeito)</b> utilizando o Peso Ajustado (<b style="color:var(--green);">${pB.toFixed(1)} kg</b>).<br>` +
-                             `• <b>Propofol (1%) Indução com Bolus Manual:</b> ${(prop/10).toFixed(1)} ml (${prop.toFixed(0)} mg) se optar por induzir antes de ligar o alvo Ce da bomba.<br>`;
+function mudarInfusao(tipo) {
+    if (tipoInfusaoAtual === tipo) {
+        tipoInfusaoAtual = 'NENHUM';
+        document.getElementById('btnLidoDex').classList.remove('active');
+        document.getElementById('btnLidoKetoDex').classList.remove('active');
     } else {
-        orientacaoModelos = `• <b>Propofol (1%) Indução com Bolus Manual:</b> ${(prop/10).toFixed(1)} ml (${prop.toFixed(0)} mg) em bólus manual lento para perda do reflexo palpebral.<br>`;
-    }
-
-    document.getElementById('calculoDosesManual').innerHTML = 
-        orientacaoModelos +
-        `• <b>Rocurônio:</b> ${(rocu/10).toFixed(1)} ml (${rocu.toFixed(0)} mg) para bloqueio neuromuscular ideal.<br>` +
-        `• <b>Mini Dose de Proteção (Indução):</b> Aspire <b>${unidadesUnificadas} UI</b> de Ketamin + <b>${unidadesUnificadas} UI</b> de Precedex na mesma seringa de Insulina de 100 UI.<br>` +
-        `<span style="color: var(--blue);">• <b>Bomba Remifentanil TCI:</b> Configurar modelo <b>Minto (Modo Efeito)</b> utilizando o Peso Ajustado (<b style="color:var(--green);">${pB.toFixed(1)} kg</b>).<br>` +
-        `• <b>Remifentanil (Alvo de Ataque):</b> Programar Alvo Ce para <b style="color:var(--yellow); font-size:1.1em;">${ceInducaoRemi.toFixed(1)} ng/ml</b> ` +
-        `(Vazão Agilia aprox. <b>${vazaoAtaqueRemi.toFixed(1)} ml/h</b>).<br>` +
-        `<b style="color: var(--red);">[ATENÇÃO] Baixar o alvo do Remifentanil IMEDIATAMENTE após a intubação para garantir a estabilidade hemodinâmica sistémica.</b></span>`;
-
-    if (duracao === 'curta') {
-        document.getElementById('textoAdjuvantesTempo').innerHTML = 
-            `<b>Plano p/ Cirurgia &le; 2h:</b><br>` +
-            `• A mini dose de Keta+Dex administrada em bólus na indução assegura a proteção nmda/simpática necessária para procedimentos rápidos. Sem necessidade de bombas adicionais de adjuvantes na manutenção.`;
-    } else {
-        let vazaoLidoDex = (pB / 4).toFixed(1);
-        document.getElementById('textoAdjuvantesTempo').innerHTML = 
-            `<b>Estratégia Avançada para Procedimentos Longos (Bariátrica / Grandes Portes):</b><br>` +
-            `• <b>Preparo da Solução Adjuvante Master:</b> 300 mg de Lidocaína + 50 mcg de Dexmedetomidina. Diluir em SF 0,9% para volume final de <b>50 ml</b>.<br>` +
-            `• <b>Velocidade de Infusão Contínua:</b> Iniciar imediatamente a <b style="color:var(--green); font-size:1.2em;">${vazaoLidoDex} ml/h</b> (Fórmula matemática fixa: $Peso / 4$).<br>` +
-            `• <b>Métrica Dose-Efeito Entregue:</b> Garante exatamente <b style="color:#fff;">1,5 mg/kg/h</b> de Lidocaína e <b style="color:#fff;">0,25 mcg/kg/h</b> de Dexmedetomidina.<br>` +
-            `<b style="color:var(--orange); font-size:1.05em;">[MANEJO CRÍTICO TEMPORAL] Desligar esta infusão obrigatoriamente de 40 a 60 minutos ANTES do final estimado da cirurgia.</b><br>` +
-            `<span style="font-size:13px; color:#aaa;">* Justificação: Devido à acumulação tecidual em cirurgias longas, este desligamento programado permite o clareamento plasmático ideal (meia-vida terminal da dexmedetomidina é de ~2h), assegurando um despertar imediato, ventilatório vigoroso e livre de sedação residual profunda na extubação.</span>`;
-    }
-
-    let doseMin = (pB * 0.05).toFixed(1);
-    let doseMax = (pB * 0.08).toFixed(1);
-    document.getElementById('calculoOpioideLonga').innerHTML = 
-        `Metadona: <b>${doseMin} a ${doseMax} mg EV</b>.<br>` +
-        `<span style="color: var(--green); font-weight: bold;">[MOMENTO] Administrar obrigatoriamente na indução, ANTES da incisão cirúrgica.</span><br>` +
-        `<span style="font-size:13px; color:#aaa;">* Racional: Sendo um opioide de longa duração com forte antagonismo NMDA, necessita de tempo de latência para acoplamento recetorial antes do estímulo nociceptivo, prevenindo a hiperalgesia e garantindo estabilidade analgésica duradoura no pós-operatório.</span>`;
+        tipoInfusaoAtual = tipo;
+        document.getElementById('btnLidoDex').classList.remove('active');
+        document.getElementById('btnLidoKetoDex').classList.remove('active');
         
-    document.getElementById('textoCoadjuvantesGerais').innerHTML = 
-        `• <b>Dipirona:</b> 2g EV (Inibição central da síntese de prostaglandinas).<br>` +
-        `• <b>Toragesic (Cetorolaco):</b> 30mg EV (Bloqueio inflamatório periférico robusto COX-1/COX-2).<br>` +
-        `• <b>Dexametasona:</b> 10mg EV (1 ampola cheia — Estabilização de membrana e potente efeito analgésico/antiemético sinérgico).<br>` +
-        `• <b>Ondansetrona:</b> 8mg EV (Saturação ideal dos receptores 5-HT3 para prevenção de NVPO em pacientes de alto risco).`;
-
-    document.getElementById('despertarEleganteBox').style.display = 'none';
-    document.getElementById('resFinal').innerHTML = "";
-    document.getElementById('bordaoFinal').style.display = 'none';
+        if(tipo === 'LIDODEX') {
+            document.getElementById('btnLidoDex').classList.add('active');
+        } else if (tipo === 'LIDOKETODEX') {
+            document.getElementById('btnLidoKetoDex').classList.add('active');
+        }
+    }
+    calcular(false);
 }
 
-function gerarGrade() {
-    let pB = parseFloat(document.getElementById('resSugerido').innerText);
-    let i = parseFloat(document.getElementById('i').value);
-    let via = document.getElementById('viaManutencao').value;
-    let duracao = document.getElementById('duracaoCirurgia').value;
-
-    let fIdade = i > 45 ? Math.exp(-0.005 * (i - 45)) : 1.0;
-    let camBasalSevo = 2.0 * Math.pow(0.96, (i - 40) / 10);
-
-    let rP = 0.65; let rR = 0.55; let rS = 0.70; 
-    let html = ""; let htmlDespertar = "";
-
-    if (via === 'propofol') {
-        htmlDespertar = `
-            <b style="color: var(--green); font-size: 1.1em; text-transform: uppercase;">3. Protocolo de Despertar Elegante (Via TIVA)</b><br>
-            <div style="margin-top: 8px;">
-                1️⃣ <b>Ao Iniciar a Sutura de Pele:</b> Reduzir imediatamente os alvos na bomba para <b style="color: var(--yellow);">Propofol Ce 1,5 mcg/ml</b> e <b style="color: var(--blue);">Remifentanil Ce 0,5 ng/ml</b>.<br>
-                2️⃣ <b>No Último Ponto da Pele:</b> <b style="color: var(--red);">Desligar completamente a bomba de Propofol</b>. Manter a bomba de <b style="color: var(--blue);">Remifentanil fixa em Ce 0,5 ng/ml</b>.<br>
-                3️⃣ <b>Monitorização do Sensorium:</b> Aguardar o índice do monitor de atividade cerebral (PSI / BIS) subir de forma estável até atingir <b style="color: var(--purple); font-weight: bold;">60</b>.<br>
-                4️⃣ <b>Reversão Consciente (Manejo Crítico):</b> No exato momento em que o PSI tocar em 60, administrar o <b>Sugamadex EV</b> (2 a 4 mg/kg).<br>
-                <span style="font-size:13px; color:#aaa; display:block; margin-left: 15px;"><i>* Justificação: Reverter o bloqueio neuromuscular no último minuto antes da consciência total elimina a agitação de despertar e evita a tosse espástica na cânula, pois o paciente recupera o tônus muscular ainda sob sedação basal.</i></span>
-                5️⃣ <b>Extubação Segura:</b> Aspire as secreções de forma extremamente suave. Chame o paciente firmemente pelo nome. Assim que <b>abrir os olhos</b>, comande: <i>"Abra a boca"</i>. Ao abrir a boca, <b>proceder à extubação imediata</b>.<br>
-                6️⃣ <b>Finalização:</b> <b style="color: var(--red);">Desligar a bomba de Remifentanil</b> imediatamente após a saída do tubo endotraqueal.<br>
-                <br>
-                🚀 <b style="color: var(--green);">Previsão Estatística do Esquema: Em até 2 minutos o paciente estará perfeitamente consciente e conversando na sala.</b>
-            </div>`;
-    } else {
-        htmlDespertar = `
-            <b style="color: var(--purple); font-size: 1.1em; text-transform: uppercase;">3. Protocolo de Despertar Elegante (Via PIVA / Sevo)</b><br>
-            <div style="margin-top: 8px;">
-                1️⃣ <b>Ao Iniciar a Sutura de Pele:</b> <b style="color: var(--red);">Fechar totalmente o vaporizador de Sevoflurano</b>, mantendo rigorosamente o mesmo fluxo de gases. Baixar o alvo do <b style="color: var(--blue);">Remifentanil Ce para 0,5 ng/ml</b>.<br>
-                2️⃣ <b>Ao Término da Sutura (Último Ponto):</b> Aumentar o fluxo de gases frescos na máquina de anestesia para realizar a <b>lavagem rápida do sistema</b> e acelerar a eliminação do halogenado.<br>
-                3️⃣ <b>Manejo da Fração Expirada:</b> Monitorizar de perto a análise de gases expirados. No exato instante em que a <b>Fração Expirada de Sevoflurano (FeSevo) atingir 0,2%</b>, administrar o <b>Sugamadex EV</b> (2 a 4 mg/kg).<br>
-                <span style="font-size:13px; color:#aaa; display:block; margin-left: 15px;"><i>* Justificação: Realizar a reversão neuromuscular com a FeSevo em 0,2% protege o paciente contra o pânico do despertar com bloqueio residual, garantindo uma transição suave, sem agitação psicomotora e sem tosse.</i></span>
-                4️⃣ <b>Extubação Segura:</b> Realizar a aspiração orofaríngea de forma muito delicada e chamar o paciente pelo nome. Assim que ele <b>abrir os olhos</b>, solicite: <i>"Abra a boca"</i>. Assim que ele abrir a boca, <b>proceder à extubação imediata</b>.<br>
-                5️⃣ <b>Finalização:</b> <b style="color: var(--red);">Desligar a infusão de Remifentanil</b> logo após retirar o tubo.<br>
-                <br>
-                🚀 <b style="color: var(--green);">Previsão Estatística do Esquema: Em até 2 minutos o paciente estará completamente desperto, calmo e conversando na mesa.</b>
-            </div>`;
+function calcular(resetInfusao) {
+    if (resetInfusao) {
+        tipoInfusaoAtual = 'NENHUM';
+        document.getElementById('btnLidoDex').classList.remove('active');
+        document.getElementById('btnLidoKetoDex').classList.remove('active');
     }
 
-    document.getElementById('despertarEleganteBox').innerHTML = htmlDespertar;
-    document.getElementById('despertarEleganteBox').style.display = 'block';
+    const pesoInputEl = document.getElementById('peso');
+    const alturaInputEl = document.getElementById('altura');
+    const pesoInputVazio = pesoInputEl.value.trim() === '';
+    const alturaInputVazio = alturaInputEl.value.trim() === '';
 
-    if (via === 'propofol') {
-        let ceBaseP = i > 75 ? 1.6 : 2.5;
-        let ceBaseR = i > 75 ? 1.2 : 2.8; 
+    let peso = parseFloat(pesoInputEl.value);
+    let alturaCm = parseFloat(alturaInputEl.value);
+    const idade = parseInt(document.getElementById('idade').value);
+    const sexo = document.getElementById('sexo').value;
 
-        const fasesProp = [
-            { t: "Pós-Intubação (Estabilização)", cp: ceBaseP, cr: ceBaseR },
-            { t: "Estímulo Máximo (Incisão/Pneumo)", cp: ceBaseP * 1.2, cr: ceBaseR * 1.3 },
-            { t: "Manutenção Estável", cp: ceBaseP * 0.9, cr: ceBaseR * 0.9 },
-            { t: "Início da Sutura (Despertar Elegante)", cp: 1.5, cr: 0.5 },
-            { t: "Último Ponto da Pele", cp: 0.0, cr: 0.5 }
-        ];
+    const alertaPeso = document.getElementById('alertaPesoEstimado');
+    alertaPeso.style.display = 'none';
+    let pesoEstimadoPorIdade = false;
 
-        html = `<table>
-                    <tr>
-                        <th rowspan="2">4. Mapa de Manutenção</th>
-                        <th colspan="2">PROPOFOL (Schnider Efeito)</th>
-                        <th colspan="2">REMI (Minto Efeito)</th>
-                    </tr>
-                    <tr>
-                        <th>Alvo Ce</th><th>Agilia Vazão (ml/h)</th>
-                        <th>Alvo Ce</th><th>Agilia Vazão (ml/h)</th>
-                    </tr>`;
-
-        fasesProp.forEach(f => {
-            let alo = Math.pow(pB / 70, 0.75);
-            let mlp = f.cp === 0 ? 0 : ((f.cp * 22 / 1000) * rP * fIdade * 1000 * 70 * alo * 60) / 10000;
-            let mlr = ((f.cr * 0.045) * rR * fIdade * 70 * alo * 60) / 40;
-
-            html += `<tr>
-                <td style="text-align:left; font-weight:bold;">${f.t}</td>
-                <td class="ce-val">${f.cp === 0 ? 'DESLIGADO' : f.cp.toFixed(1) + ' mcg/ml'}</td>
-                <td class="highlight-ml">${mlp === 0 ? '0.0' : mlp.toFixed(1)}</td>
-                <td class="ce-val">${f.cr.toFixed(1)} ng/ml</td>
-                <td class="highlight-ml">${mlr.toFixed(1)}</td>
-            </tr>`;
-        });
-
-    } else {
-        let ceBaseR = i > 75 ? 1.0 : 2.4;
-
-        const fasesSevo = [
-            { t: "Pós-Intubação (Estabilização)", cam: 0.8 * rS, cr: ceBaseR },
-            { t: "Estímulo Máximo (Incisão/Pneumo)", cam: 1.1 * rS, cr: ceBaseR * 1.2 },
-            { t: "Manutenção Estável", cam: 0.7 * rS, cr: ceBaseR * 0.9 },
-            { t: "Início da Sutura (Despertar Elegante)", cam: 0.0, cr: 0.5 },
-            { t: "Manejo da Fração Expirada (FeSevo 0,2)", cam: 0.0, cr: 0.5 }
-        ];
-
-        html = `<table>
-                    <tr>
-                        <th rowspan="2">4. Mapa de Manutenção</th>
-                        <th colspan="2">SEVOFLURANO (PIVA)</th>
-                        <th colspan="2">REMI (Minto Efeito)</th>
-                    </tr>
-                    <tr>
-                        <th>Fração CAM</th><th>Alvo Esperado</th>
-                        <th>Alvo Ce</th><th>Agilia Vazão (ml/h)</th>
-                    </tr>`;
-
-        fasesSevo.forEach(f => {
-            let alvoPorcentagemSevo = f.cam * camBasalSevo;
-            let alo = Math.pow(pB / 70, 0.75);
-            let mlr = ((f.cr * 0.045) * rR * 1.0 * 70 * alo * 60) / 40;
-
-            let textoCam = f.t.includes("Sutura") || f.t.includes("Expirada") ? "VAPORIZADOR FECHADO" : f.cam.toFixed(2) + " CAM";
-            let textoAlvoSevo = f.t.includes("Sutura") ? "Mesmo Fluxo" : (f.t.includes("Expirada") ? "Lavar Sistema &rarr; FeSevo 0.2%" : alvoPorcentagemSevo.toFixed(1) + " %");
-
-            html += `<tr>
-                <td style="text-align:left; font-weight:bold;">${f.t}</td>
-                <td class="ce-val">${textoCam}</td>
-                <td class="highlight-cam" style="font-size: 12px;">${textoAlvoSevo}</td>
-                <td class="ce-val">${f.cr.toFixed(1)} ng/ml</td>
-                <td class="highlight-ml">${mlr.toFixed(1)}</td>
-            </tr>`;
-        });
+    if (pesoInputVazio && alturaInputVazio && !isNaN(idade) && idade <= 16) {
+        if (idade >= 1 && idade <= 5) {
+            peso = (idade * 2) + 8;
+            pesoEstimadoPorIdade = true;
+        } else if (idade >= 6 && idade <= 12) {
+            peso = (idade * 3) + 7;
+            pesoEstimadoPorIdade = true;
+        } else {
+            alert("Peso e altura não informados. Para idade " + idade + " anos não há fórmula de estimativa de peso cadastrada — por favor, preencha o peso manualmente.");
+            return;
+        }
+        pesoInputEl.value = peso;
+        alertaPeso.innerText = "⚖️ Peso estimado pela idade (" + idade + " anos): " + peso + " kg. Fórmula de estimativa — confirme o peso real assim que possível.";
+        alertaPeso.style.display = 'block';
     }
 
-    document.getElementById('resFinal').innerHTML = html + `</table>`;
-    document.getElementById('bordaoFinal').style.display = 'block';
-    document.getElementById('bordaoFinal').scrollIntoView({ behavior: 'smooth' });
+    if (!peso || isNaN(idade) || (!pesoEstimadoPorIdade && !alturaCm)) {
+        alert("Por favor, preencha todos os campos corretamente.");
+        return;
+    }
+
+    let imc = 0, pesoIdeal = peso, massaMagra = peso, pesoAjustado = peso;
+
+    if (!pesoEstimadoPorIdade) {
+        const alturaM = alturaCm / 100;
+        imc = peso / (alturaM * alturaM);
+
+        const polegadasAcima5Pes = (alturaCm - 152.4) / 2.54;
+        if (sexo === 'M') {
+            pesoIdeal = 50 + (2.3 * polegadasAcima5Pes);
+        } else {
+            pesoIdeal = 45.5 + (2.3 * polegadasAcima5Pes);
+        }
+
+        if (sexo === 'M') {
+            massaMagra = (0.407 * peso) + (0.267 * alturaCm) - 19.2;
+        } else {
+            massaMagra = (0.252 * peso) + (0.473 * alturaCm) - 48.3;
+        }
+        if (massaMagra > peso) massaMagra = peso;
+        if (massaMagra < 0) massaMagra = 0;
+
+        pesoAjustado = peso;
+        if (peso > pesoIdeal) {
+            pesoAjustado = pesoIdeal + 0.25 * (peso - pesoIdeal);
+        }
+    }
+
+    document.getElementById('resIMC').innerText = pesoEstimadoPorIdade ? "N/D" : imc.toFixed(1);
+    document.getElementById('resPI').innerText = pesoEstimadoPorIdade ? "N/D" : pesoIdeal.toFixed(1);
+    document.getElementById('resMM').innerText = pesoEstimadoPorIdade ? peso.toFixed(1) + " (peso estimado)" : massaMagra.toFixed(1);
+    document.getElementById('resPA').innerText = pesoEstimadoPorIdade ? "N/D" : pesoAjustado.toFixed(1);
+
+    let valAlvoLido = 1.5;
+    let valAlvoDex = 0.33;
+    let valAlvoKet = 0.25;
+    let alvoMetMin = 0.15;
+    let alvoMetMax = 0.20;
+
+    let fProp = 2.1; 
+    let fRoc = 0.7;  
+
+    const alertaDiv = document.getElementById('alertaIdade');
+    const alertaAinh = document.getElementById('alertaAinh');
+    alertaDiv.style.display = 'none';
+    alertaAinh.style.display = 'none';
+
+    if (idade >= 65 && idade <= 75) {
+        valAlvoLido = 1.0;       
+        valAlvoDex = 0.33 * 0.7; 
+        valAlvoKet = 0.25;       
+        alvoMetMin = 0.10;
+        alvoMetMax = 0.15;
+        
+        fProp = 2.1 * 0.7; 
+        fRoc = 0.7 * 0.8;  
+
+        alertaDiv.innerText = "⚠️ Idoso (65-75 anos): Alvos e fármacos de indução programados com redução de ~30%.";
+        alertaDiv.style.display = 'block';
+        alertaAinh.innerText = "🛑 CRITÉRIO BEERS / SEGURANÇA GERIÁTRICA: Questionar ou evitar o uso de Anti-inflamatórios não esteroides (AINHs).";
+        alertaAinh.style.display = 'block';
+    } else if (idade > 75) {
+        valAlvoLido = 1.0;
+        valAlvoDex = 0.33 * 0.5; 
+        valAlvoKet = 0.17 * 0.5; 
+        alvoMetMin = 0.08;
+        alvoMetMax = 0.10;
+
+        fProp = 2.1 * 0.5; 
+        fRoc = 0.7 * 0.7;  
+
+        alertaDiv.innerText = "⚠️ Idoso (> 75 anos): Alvos reduzidos de forma severa.";
+        alertaDiv.style.display = 'block';
+        alertaAinh.innerText = "🛑 CRITÉRIO BEERS / SEGURANÇA GERIÁTRICA: Evitar o uso de Anti-inflamatórios não esteroides (AINHs).";
+        alertaAinh.style.display = 'block';
+    } else if (idade < 16) {
+        valAlvoLido = 1.5;
+        valAlvoDex = 0.33; 
+        valAlvoKet = 0.25; 
+        fProp = 3.0; 
+        fRoc = 0.6;
+        alertaDiv.innerText = "👶 Pediátrico (< 16 anos): Dexmedetomidina e Ketamina calculadas pelo Peso Ajustado. Metadona em dose única (0,1 mg/kg) substitui a Morfina.";
+        alertaDiv.style.display = 'block';
+    }
+
+    let pesoBaseAdjuvantes = massaMagra;
+    if (idade < 16) {
+        pesoBaseAdjuvantes = pesoAjustado;
+    }
+
+    document.getElementById('alvoMet').innerText = alvoMetMin.toFixed(2) + " - " + alvoMetMax.toFixed(2);
+    document.getElementById('alvoLido').innerText = valAlvoLido;
+    document.getElementById('alvoDex').innerText = valAlvoDex.toFixed(3).replace(/\.?0+$/, "");
+    document.getElementById('alvoKet').innerText = valAlvoKet.toFixed(3).replace(/\.?0+$/, "");
+
+    const doseLido = pesoIdeal * valAlvoLido;
+    const doseDex = pesoBaseAdjuvantes * valAlvoDex;
+    const doseKet = pesoBaseAdjuvantes * valAlvoKet;
+    
+    const doseMetMin = massaMagra * alvoMetMin;
+    const doseMetMax = massaMagra * alvoMetMax;
+    
+    const doseMorf = pesoAjustado * 0.10;
+
+    const dosePropFinal = peso * fProp;
+    const doseRocFinal = peso * fRoc;
+
+    const mLidoExato = doseLido / 20;
+    const mLidoArredondado = (Math.round(mLidoExato * 2) / 2).toFixed(1);
+
+    const uDex = (doseDex / 100) * 100; 
+    const uKet = (doseKet / 50) * 100;  
+    
+    const mLMetMin = doseMetMin / 10;
+    const mLMetMax = doseMetMax / 10;
+
+    let vazaoInfusaoCont = 0;
+    const linhaInf = document.getElementById('linhaInfusaoContinua');
+    const passoInfRoteiro = document.getElementById('passoRoteiroInfusao');
+    const descDesmameBomba = document.getElementById('descDesmameBomba');
+
+    if(tipoInfusaoAtual === 'LIDODEX') {
+        linhaInf.style.display = 'table-row';
+        passoInfRoteiro.style.display = 'block';
+        descDesmameBomba.style.display = 'inline';
+        
+        document.getElementById('nomeInfusao').innerText = "Infusão Lido-Dex";
+        document.getElementById('descInfusao').innerText = "Lido 300mg (15mL) + Dex 100mcg (1mL) + SF 34mL (Total: 50mL)";
+        document.getElementById('desmameInfusao').innerText = "Desligar no início do fechamento da aponeurose (30-60 min antes do final da cirurgia)";
+        document.getElementById('regraInfusao').innerText = "PI / 4,5";
+        document.getElementById('pesoUsadoInfusao').innerText = pesoIdeal.toFixed(1) + " kg";
+        vazaoInfusaoCont = pesoIdeal / 4.5;
+        
+        document.getElementById('valInfusao').innerText = vazaoInfusaoCont.toFixed(1);
+        document.getElementById('rotVazaoInf').innerText = vazaoInfusaoCont.toFixed(1);
+    } else if (tipoInfusaoAtual === 'LIDOKETODEX') {
+        linhaInf.style.display = 'table-row';
+        passoInfRoteiro.style.display = 'block';
+        descDesmameBomba.style.display = 'inline';
+
+        document.getElementById('nomeInfusao').innerText = "Infusão Lido-Keto-Dex";
+        document.getElementById('descInfusao').innerText = "Lido 300mg (15mL) + Dex 100mcg (1mL) + Ketamina 75mg (1,5mL) + SF 32,5mL (Total: 50mL)";
+        document.getElementById('desmameInfusao').innerText = "Desligar no início do fechamento da aponeurose (30-60 min antes do final da cirurgia)";
+        document.getElementById('regraInfusao').innerText = "PI / 4,5";
+        document.getElementById('pesoUsadoInfusao').innerText = pesoIdeal.toFixed(1) + " kg";
+        vazaoInfusaoCont = pesoIdeal / 4.5;
+
+        document.getElementById('valInfusao').innerText = vazaoInfusaoCont.toFixed(1);
+        document.getElementById('rotVazaoInf').innerText = vazaoInfusaoCont.toFixed(1);
+    } else {
+        linhaInf.style.display = 'none';
+        passoInfRoteiro.style.display = 'none';
+        descDesmameBomba.style.display = 'none';
+    }
+
+    const uMorf = (doseMorf / 10) * 100; // Metadona pediátrica: unidades (U) de seringa de insulina, concentração 10 mg/mL
+
+    document.getElementById('doseLido').innerText = doseLido.toFixed(1);
+    document.getElementById('uLido').innerText = mLidoArredondado;
+
+    document.getElementById('doseDex').innerText = doseDex.toFixed(1);
+    document.getElementById('uDex').innerText = uDex.toFixed(1);
+
+    document.getElementById('doseKet').innerText = doseKet.toFixed(1);
+    document.getElementById('uKet').innerText = uKet.toFixed(1);
+
+    document.getElementById('doseMet').innerText = doseMetMin.toFixed(1) + " - " + doseMetMax.toFixed(1);
+    document.getElementById('uMet').innerText = mLMetMin.toFixed(1) + " - " + mLMetMax.toFixed(1);
+
+    document.getElementById('doseMorf').innerText = doseMorf.toFixed(2);
+    document.getElementById('uMorf').innerText = uMorf.toFixed(1);
+
+    document.getElementById('rotLido').innerText = mLidoArredondado;
+    document.getElementById('rotProp').innerText = Math.round(dosePropFinal);
+    document.getElementById('rotRoc').innerText = Math.round(doseRocFinal);
+    
+    document.getElementById('rotDex').innerText = doseDex.toFixed(1);
+    document.getElementById('rotKet').innerText = doseKet.toFixed(1);
+    document.getElementById('rotMet').innerText = mLMetMin.toFixed(1) + " a " + mLMetMax.toFixed(1);
+
+    const descIndPadrao = document.getElementById('descIndPadrao');
+    const descIndPediatrica = document.getElementById('descIndPediatrica');
+    const timelineItemPos2 = document.getElementById('timelineItemPos2');
+
+    if (idade <= 8) {
+        descIndPadrao.style.display = 'none';
+        descIndPediatrica.style.display = 'inline';
+        timelineItemPos2.style.display = 'none';
+        document.getElementById('rotDexPed').innerText = doseDex.toFixed(1);
+        document.getElementById('rotKetPed').innerText = doseKet.toFixed(1);
+        document.getElementById('rotMorfPed').innerText = doseMorf.toFixed(2);
+    } else {
+        descIndPadrao.style.display = 'inline';
+        descIndPediatrica.style.display = 'none';
+        timelineItemPos2.style.display = 'block';
+    }
+    document.getElementById('rotMorf').innerText = doseMorf.toFixed(2);
+
+    if (idade < 16) {
+        document.getElementById('rotMetTexto').style.display = 'none';
+        document.getElementById('rotMorfTexto').style.display = 'inline';
+        document.getElementById('linhaMorfina').style.display = 'table-row';
+        document.getElementById('linhaMetadona').style.display = 'none';
+    } else {
+        document.getElementById('rotMetTexto').style.display = 'inline';
+        document.getElementById('rotMorfTexto').style.display = 'none';
+        document.getElementById('linhaMorfina').style.display = 'none';
+        document.getElementById('linhaMetadona').style.display = 'table-row';
+    }
+
+    document.getElementById('resultados').style.display = 'block';
+    document.getElementById('resultados').scrollIntoView({ behavior: 'smooth' });
+}
+
+function toggleBibliografia() {
+    const box = document.getElementById('bibliografiaBox');
+    if (box.style.display === 'none' || box.style.display === '') {
+        box.style.display = 'block';
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+function toggleSugamadex() {
+    const box = document.getElementById('sugamadexBox');
+    if (box.style.display === 'none' || box.style.display === '') {
+        box.style.display = 'block';
+        box.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        box.style.display = 'none';
+    }
 }
 </script>
+
 </body>
 </html>
