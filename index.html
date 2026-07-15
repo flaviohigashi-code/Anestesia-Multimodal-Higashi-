@@ -566,9 +566,9 @@
                         <tr id="linhaLido">
                             <td>
                                 <strong>Lidocaína 2% (s/ vaso)</strong>
-                                <span class="info-diluicao">20 mg/mL (Bolus Indução, base: peso ideal) — infundir em 10 min, NÃO em bolus rápido</span>
+                                <span class="info-diluicao">20 mg/mL (Bolus Indução, base: peso magro) — infundir em 10 min, NÃO em bolus rápido</span>
                             </td>
-                            <td><span id="alvoLido">1.5</span> mg/kg (peso ideal)</td>
+                            <td><span id="alvoLido">1 - 1,5</span> mg/kg (peso magro)</td>
                             <td><span id="doseLido"></span> mg</td>
                             <td class="highlight-ml"><span id="uLido"></span> mL</td>
                         </tr>
@@ -894,8 +894,7 @@ function calcular(resetInfusao) {
     document.getElementById('resMM').innerText = pesoEstimadoPorIdade ? peso.toFixed(1) + " (peso estimado)" : massaMagra.toFixed(1);
     document.getElementById('resPA').innerText = pesoEstimadoPorIdade ? "N/D" : pesoAjustado.toFixed(1);
 
-    let valAlvoLido = 1.5;
-    let valAlvoDex = 0.33;
+    let valAlvoDex = 0.5;
     let valAlvoKet = 0.25;
     let alvoMetMin = 0.15;
     let alvoMetMax = 0.20;
@@ -909,8 +908,7 @@ function calcular(resetInfusao) {
     alertaAinh.style.display = 'none';
 
     if (idade >= 65 && idade <= 75) {
-        valAlvoLido = 1.0;       
-        valAlvoDex = 0.33 * 0.7; 
+        valAlvoDex = 0.5 * 0.7; 
         valAlvoKet = 0.25;       
         alvoMetMin = 0.10;
         alvoMetMax = 0.15;
@@ -923,8 +921,7 @@ function calcular(resetInfusao) {
         alertaAinh.innerText = "🛑 CRITÉRIO BEERS / SEGURANÇA GERIÁTRICA: Questionar ou evitar o uso de Anti-inflamatórios não esteroides (AINHs).";
         alertaAinh.style.display = 'block';
     } else if (idade > 75) {
-        valAlvoLido = 1.0;
-        valAlvoDex = 0.33 * 0.5; 
+        valAlvoDex = 0.5 * 0.5; 
         valAlvoKet = 0.17 * 0.5; 
         alvoMetMin = 0.08;
         alvoMetMax = 0.10;
@@ -937,8 +934,7 @@ function calcular(resetInfusao) {
         alertaAinh.innerText = "🛑 CRITÉRIO BEERS / SEGURANÇA GERIÁTRICA: Evitar o uso de Anti-inflamatórios não esteroides (AINHs).";
         alertaAinh.style.display = 'block';
     } else if (idade < 16) {
-        valAlvoLido = 1.5;
-        valAlvoDex = 0.33; 
+        valAlvoDex = 0.5; 
         valAlvoKet = 0.25; 
         fProp = 3.0; 
         fRoc = 0.6;
@@ -947,29 +943,50 @@ function calcular(resetInfusao) {
     }
 
     let pesoBaseAdjuvantes = massaMagra;
+    let pesoBaseMetadonaPed = pesoAjustado;
     if (idade < 16) {
         pesoBaseAdjuvantes = pesoAjustado;
+        pesoBaseMetadonaPed = pesoAjustado;
+    }
+
+    // Crianças de 8 anos ou menos: sempre usar o peso estimado pela fórmula de idade
+    // para sugerir as doses de Dex, Ketamina e Metadona (independente do peso/altura digitados).
+    if (idade <= 8) {
+        let pesoPorFormulaIdade;
+        if (idade >= 1 && idade <= 5) {
+            pesoPorFormulaIdade = (idade * 2) + 8;
+        } else if (idade >= 6 && idade <= 12) {
+            pesoPorFormulaIdade = (idade * 3) + 7;
+        } else {
+            pesoPorFormulaIdade = peso; // <1 ano: sem fórmula, usa peso informado/estimado
+        }
+        pesoBaseAdjuvantes = pesoPorFormulaIdade;
+        pesoBaseMetadonaPed = pesoPorFormulaIdade;
+        alertaDiv.innerText = "👶 Pediátrico (≤ 8 anos): Dexmedetomidina, Ketamina e Metadona sugeridas com base no peso estimado pela idade (" + pesoPorFormulaIdade.toFixed(1) + " kg), independente do peso/altura digitados.";
+        alertaDiv.style.display = 'block';
     }
 
     document.getElementById('alvoMet').innerText = alvoMetMin.toFixed(2) + " - " + alvoMetMax.toFixed(2);
-    document.getElementById('alvoLido').innerText = valAlvoLido;
     document.getElementById('alvoDex').innerText = valAlvoDex.toFixed(3).replace(/\.?0+$/, "");
     document.getElementById('alvoKet').innerText = valAlvoKet.toFixed(3).replace(/\.?0+$/, "");
 
-    const doseLido = pesoIdeal * valAlvoLido;
+    const doseLidoMin = massaMagra * 1.0;
+    const doseLidoMax = massaMagra * 1.5;
     const doseDex = pesoBaseAdjuvantes * valAlvoDex;
     const doseKet = pesoBaseAdjuvantes * valAlvoKet;
     
     const doseMetMin = massaMagra * alvoMetMin;
     const doseMetMax = massaMagra * alvoMetMax;
     
-    const doseMorf = pesoAjustado * 0.10;
+    const doseMorf = pesoBaseMetadonaPed * 0.10;
 
     const dosePropFinal = peso * fProp;
     const doseRocFinal = peso * fRoc;
 
-    const mLidoExato = doseLido / 20;
-    const mLidoArredondado = (Math.round(mLidoExato * 2) / 2).toFixed(1);
+    const mLidoMinExato = doseLidoMin / 20;
+    const mLidoMaxExato = doseLidoMax / 20;
+    const mLidoMinArredondado = (Math.round(mLidoMinExato * 2) / 2).toFixed(1);
+    const mLidoMaxArredondado = (Math.round(mLidoMaxExato * 2) / 2).toFixed(1);
 
     const uDex = (doseDex / 100) * 100; 
     const uKet = (doseKet / 50) * 100;  
@@ -1018,8 +1035,8 @@ function calcular(resetInfusao) {
 
     const uMorf = (doseMorf / 10) * 100; // Metadona pediátrica: unidades (U) de seringa de insulina, concentração 10 mg/mL
 
-    document.getElementById('doseLido').innerText = doseLido.toFixed(1);
-    document.getElementById('uLido').innerText = mLidoArredondado;
+    document.getElementById('doseLido').innerText = doseLidoMin.toFixed(1) + " - " + doseLidoMax.toFixed(1);
+    document.getElementById('uLido').innerText = mLidoMinArredondado + " - " + mLidoMaxArredondado;
 
     document.getElementById('doseDex').innerText = doseDex.toFixed(1);
     document.getElementById('uDex').innerText = uDex.toFixed(1);
@@ -1033,7 +1050,7 @@ function calcular(resetInfusao) {
     document.getElementById('doseMorf').innerText = doseMorf.toFixed(2);
     document.getElementById('uMorf').innerText = uMorf.toFixed(1);
 
-    document.getElementById('rotLido').innerText = mLidoArredondado;
+    document.getElementById('rotLido').innerText = mLidoMinArredondado + " - " + mLidoMaxArredondado;
     document.getElementById('rotProp').innerText = Math.round(dosePropFinal);
     document.getElementById('rotRoc').innerText = Math.round(doseRocFinal);
     
