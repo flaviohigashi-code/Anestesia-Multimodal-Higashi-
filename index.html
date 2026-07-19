@@ -531,7 +531,6 @@
             <div id="alertaIdade" class="alerta-idade"></div>
             <div id="alertaAinh" class="alerta-ainh"></div>
             <div id="alertaPesoEstimado" class="alerta-idade" style="display:none; background-color:#d1ecf1; color:#0c5460; border-left-color:#bee5eb;"></div>
-            <div id="alertaFaixaLidoDex" class="alerta-idade" style="display:none;"></div>
 
             <div class="results-title">Dados Antropométricos</div>
             <div class="table-responsive">
@@ -577,7 +576,7 @@
                         <tr id="linhaInfusaoContinua" style="background-color: #fdfffe; border-left: 4px solid #0056b3; display: none;">
                             <td>
                                 <strong id="nomeInfusao">Infusão Lido-Dex</strong>
-                                <span class="info-diluicao" id="descInfusao">Lido 300mg + Dex 50mcg em SF (Total: 50mL)</span>
+                                <span class="info-diluicao" id="descInfusao">Lido 200mg (10mL) + Dex 100mcg (1mL) em SF (Total: 50mL)</span>
                                 <span class="desmame-info" id="desmameInfusao">Desligar 1h antes do final</span>
                             </td>
                             <td><span id="regraInfusao" style="font-weight: bold; color: #0056b3;">PA / 4</span></td>
@@ -1016,22 +1015,14 @@ function calcular(resetInfusao) {
         descDesmameBomba.style.display = 'inline';
         
         document.getElementById('nomeInfusao').innerText = "Infusão Lido-Dex";
-        document.getElementById('descInfusao').innerText = "Lido 300mg (15mL) + Dex 100mcg (1mL) + SF 34mL (Total: 50mL)";
+        document.getElementById('descInfusao').innerText = "Lido 200mg (10mL) + Dex 100mcg (1mL) + SF q.s.p. 50mL (Total: 50mL)";
         document.getElementById('desmameInfusao').innerText = "Desligar no início do fechamento da aponeurose (30-60 min antes do final da cirurgia)";
-        document.getElementById('regraInfusao').innerText = "PI / 4,5";
         document.getElementById('pesoUsadoInfusao').innerText = pesoIdeal.toFixed(1) + " kg";
-        vazaoInfusaoCont = pesoIdeal / 4.5;
+        document.getElementById('regraInfusao').innerText = "PI / 4";
+        vazaoInfusaoCont = pesoIdeal / 4;
         
         document.getElementById('valInfusao').innerText = vazaoInfusaoCont.toFixed(1);
         document.getElementById('rotVazaoInf').innerText = vazaoInfusaoCont.toFixed(1);
-
-        const alertaFaixaLido = document.getElementById('alertaFaixaLidoDex');
-        if (pesoAjustado < 60 || pesoAjustado > 90) {
-            alertaFaixaLido.innerText = "⚠️ Dose fixa da Infusão Lido-Dex validada para peso ajustado entre 60-90 kg. Peso ajustado atual: " + pesoAjustado.toFixed(1) + " kg — conferir a vazão manualmente para evitar erros.";
-            alertaFaixaLido.style.display = 'block';
-        } else {
-            alertaFaixaLido.style.display = 'none';
-        }
     } else if (tipoInfusaoAtual === 'LIDOKETODEX') {
         linhaInf.style.display = 'table-row';
         passoInfRoteiro.style.display = 'block';
@@ -1040,17 +1031,16 @@ function calcular(resetInfusao) {
         document.getElementById('nomeInfusao').innerText = "Infusão Lido-Keto-Dex";
         document.getElementById('descInfusao').innerText = "Lido 200mg (10mL) + Dex 100mcg (1mL) + Ketamina 75mg (1,5mL) + SF q.s.p. 50mL (Total: 50mL)";
         document.getElementById('desmameInfusao').innerText = "Desligar no início do fechamento da aponeurose (30-60 min antes do final da cirurgia)";
-        document.getElementById('regraInfusao').innerText = "Dose fixa sugerida";
-        document.getElementById('pesoUsadoInfusao').innerText = "--";
+        document.getElementById('pesoUsadoInfusao').innerText = pesoIdeal.toFixed(1) + " kg";
+        document.getElementById('regraInfusao').innerText = "PI / 4";
+        vazaoInfusaoCont = pesoIdeal / 4;
 
-        document.getElementById('valInfusao').innerText = "10 - 12";
-        document.getElementById('rotVazaoInf').innerText = "10 - 12";
-        document.getElementById('alertaFaixaLidoDex').style.display = 'none';
+        document.getElementById('valInfusao').innerText = vazaoInfusaoCont.toFixed(1);
+        document.getElementById('rotVazaoInf').innerText = vazaoInfusaoCont.toFixed(1);
     } else {
         linhaInf.style.display = 'none';
         passoInfRoteiro.style.display = 'none';
         descDesmameBomba.style.display = 'none';
-        document.getElementById('alertaFaixaLidoDex').style.display = 'none';
     }
 
     const uMorf = (doseMorf / 10) * 100; // Metadona pediátrica: unidades (U) de seringa de insulina, concentração 10 mg/mL
