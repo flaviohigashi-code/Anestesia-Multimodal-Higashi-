@@ -538,7 +538,7 @@
                     <tr><td>IMC:</td><td><span id="resIMC"></span> kg/m²</td></tr>
                     <tr><td>Peso Ideal (Devine):</td><td><span id="resPI"></span> kg</td></tr>
                     <tr><td>Massa Magra (Boer):</td><td><span id="resMM" style="font-weight: bold; color: #0056b3;"></span> kg</td></tr>
-                    <tr><td>Peso Ajustado (25%):</td><td><span id="resPA"></span> kg</td></tr>
+                    <tr><td>Peso Ajustado (40%):</td><td><span id="resPA"></span> kg</td></tr>
                 </table>
             </div>
 
@@ -885,7 +885,7 @@ function calcular(resetInfusao) {
 
         pesoAjustado = peso;
         if (peso > pesoIdeal) {
-            pesoAjustado = pesoIdeal + 0.25 * (peso - pesoIdeal);
+            pesoAjustado = pesoIdeal + 0.4 * (peso - pesoIdeal);
         }
     }
 
