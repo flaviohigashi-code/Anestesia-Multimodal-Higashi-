@@ -531,6 +531,7 @@
             <div id="alertaIdade" class="alerta-idade"></div>
             <div id="alertaAinh" class="alerta-ainh"></div>
             <div id="alertaPesoEstimado" class="alerta-idade" style="display:none; background-color:#d1ecf1; color:#0c5460; border-left-color:#bee5eb;"></div>
+            <div id="alertaFaixaLidoDex" class="alerta-idade" style="display:none;"></div>
 
             <div class="results-title">Dados Antropométricos</div>
             <div class="table-responsive">
@@ -566,9 +567,9 @@
                         <tr id="linhaLido">
                             <td>
                                 <strong>Lidocaína 2% (s/ vaso)</strong>
-                                <span class="info-diluicao">20 mg/mL (Bolus Indução, base: peso magro) — infundir em 10 min, NÃO em bolus rápido</span>
+                                <span class="info-diluicao">20 mg/mL (Bolus Indução, base: peso ideal) — infundir em 10 min, NÃO em bolus rápido</span>
                             </td>
-                            <td><span id="alvoLido">1 - 1,5</span> mg/kg (peso magro)</td>
+                            <td><span id="alvoLido">1 - 1,5</span> mg/kg (peso ideal)</td>
                             <td><span id="doseLido"></span> mg</td>
                             <td class="highlight-ml"><span id="uLido"></span> mL</td>
                         </tr>
@@ -637,7 +638,7 @@
                         <div class="timeline-title">1. Indução Anestésica Dinâmica</div>
                         <div class="timeline-desc">
                             <span id="descIndPadrao">
-                            Administrar <span class="badge-drug">Lidocaína 2%: <span class="badge-dinamico" id="rotLido"></span> mL</span> para proteção simpática/dor à injeção.<br>
+                            Administrar <span class="badge-drug">Lidocaína 2%: <span class="badge-dinamico" id="rotLido"></span> mL</span>, em infusão lenta de 10 min, para proteção simpática/dor à injeção.<br>
                             Injetar <span class="badge-drug">Propofol: <span class="badge-dinamico" id="rotProp"></span> mg</span> + <span class="badge-drug">Rocurônio: <span class="badge-dinamico" id="rotRoc"></span> mg</span>.<br>
                             Remifentanil TCI em 4 ng/mL até a intubação orotraqueal, reduzindo o alvo para cerca de 2 ng/mL logo após fixar a via aérea. Administrar Fentanil na indução se não for usar o Remifentanil.
                             </span>
@@ -894,8 +895,10 @@ function calcular(resetInfusao) {
     document.getElementById('resMM').innerText = pesoEstimadoPorIdade ? peso.toFixed(1) + " (peso estimado)" : massaMagra.toFixed(1);
     document.getElementById('resPA').innerText = pesoEstimadoPorIdade ? "N/D" : pesoAjustado.toFixed(1);
 
-    let valAlvoDex = 0.5;
-    let valAlvoKet = 0.25;
+    let valAlvoDexMin = 0.3;
+    let valAlvoDexMax = 0.5;
+    let valAlvoKetMin = 0.17;
+    let valAlvoKetMax = 0.25;
     let alvoMetMin = 0.15;
     let alvoMetMax = 0.20;
 
@@ -908,8 +911,8 @@ function calcular(resetInfusao) {
     alertaAinh.style.display = 'none';
 
     if (idade >= 65 && idade <= 75) {
-        valAlvoDex = 0.5 * 0.7; 
-        valAlvoKet = 0.25;       
+        valAlvoDexMin = 0.3 * 0.7; 
+        valAlvoDexMax = 0.5 * 0.7; 
         alvoMetMin = 0.10;
         alvoMetMax = 0.15;
         
@@ -921,8 +924,10 @@ function calcular(resetInfusao) {
         alertaAinh.innerText = "🛑 CRITÉRIO BEERS / SEGURANÇA GERIÁTRICA: Questionar ou evitar o uso de Anti-inflamatórios não esteroides (AINHs).";
         alertaAinh.style.display = 'block';
     } else if (idade > 75) {
-        valAlvoDex = 0.5 * 0.5; 
-        valAlvoKet = 0.17 * 0.5; 
+        valAlvoDexMin = 0.3 * 0.5; 
+        valAlvoDexMax = 0.5 * 0.5; 
+        valAlvoKetMin = 0.17 * 0.5; 
+        valAlvoKetMax = 0.17 * 0.5; 
         alvoMetMin = 0.08;
         alvoMetMax = 0.10;
 
@@ -934,8 +939,6 @@ function calcular(resetInfusao) {
         alertaAinh.innerText = "🛑 CRITÉRIO BEERS / SEGURANÇA GERIÁTRICA: Evitar o uso de Anti-inflamatórios não esteroides (AINHs).";
         alertaAinh.style.display = 'block';
     } else if (idade < 16) {
-        valAlvoDex = 0.5; 
-        valAlvoKet = 0.25; 
         fProp = 3.0; 
         fRoc = 0.6;
         alertaDiv.innerText = "👶 Pediátrico (< 16 anos): Dexmedetomidina e Ketamina calculadas pelo Peso Ajustado. Metadona em dose única (0,1 mg/kg) substitui a Morfina.";
@@ -967,13 +970,15 @@ function calcular(resetInfusao) {
     }
 
     document.getElementById('alvoMet').innerText = alvoMetMin.toFixed(2) + " - " + alvoMetMax.toFixed(2);
-    document.getElementById('alvoDex').innerText = valAlvoDex.toFixed(3).replace(/\.?0+$/, "");
-    document.getElementById('alvoKet').innerText = valAlvoKet.toFixed(3).replace(/\.?0+$/, "");
+    document.getElementById('alvoDex').innerText = (valAlvoDexMin.toFixed(2) === valAlvoDexMax.toFixed(2)) ? valAlvoDexMin.toFixed(2) : valAlvoDexMin.toFixed(2) + " - " + valAlvoDexMax.toFixed(2);
+    document.getElementById('alvoKet').innerText = (valAlvoKetMin.toFixed(3) === valAlvoKetMax.toFixed(3)) ? valAlvoKetMin.toFixed(3).replace(/\.?0+$/, "") : valAlvoKetMin.toFixed(2) + " - " + valAlvoKetMax.toFixed(2);
 
-    const doseLidoMin = massaMagra * 1.0;
-    const doseLidoMax = massaMagra * 1.5;
-    const doseDex = pesoBaseAdjuvantes * valAlvoDex;
-    const doseKet = pesoBaseAdjuvantes * valAlvoKet;
+    const doseLidoMin = pesoIdeal * 1.0;
+    const doseLidoMax = pesoIdeal * 1.5;
+    const doseDexMin = pesoBaseAdjuvantes * valAlvoDexMin;
+    const doseDexMax = pesoBaseAdjuvantes * valAlvoDexMax;
+    const doseKetMin = pesoBaseAdjuvantes * valAlvoKetMin;
+    const doseKetMax = pesoBaseAdjuvantes * valAlvoKetMax;
     
     const doseMetMin = massaMagra * alvoMetMin;
     const doseMetMax = massaMagra * alvoMetMax;
@@ -988,8 +993,14 @@ function calcular(resetInfusao) {
     const mLidoMinArredondado = (Math.round(mLidoMinExato * 2) / 2).toFixed(1);
     const mLidoMaxArredondado = (Math.round(mLidoMaxExato * 2) / 2).toFixed(1);
 
-    const uDex = (doseDex / 100) * 100; 
-    const uKet = (doseKet / 50) * 100;  
+    const uDexMin = (doseDexMin / 100) * 100;
+    const uDexMax = (doseDexMax / 100) * 100;
+    const doseDexTxt = (doseDexMin.toFixed(1) === doseDexMax.toFixed(1)) ? doseDexMin.toFixed(1) : doseDexMin.toFixed(1) + " - " + doseDexMax.toFixed(1);
+    const uDexTxt = (uDexMin.toFixed(1) === uDexMax.toFixed(1)) ? uDexMin.toFixed(1) : uDexMin.toFixed(1) + " - " + uDexMax.toFixed(1);
+    const uKetMin = (doseKetMin / 50) * 100;
+    const uKetMax = (doseKetMax / 50) * 100;
+    const doseKetTxt = (doseKetMin.toFixed(1) === doseKetMax.toFixed(1)) ? doseKetMin.toFixed(1) : doseKetMin.toFixed(1) + " - " + doseKetMax.toFixed(1);
+    const uKetTxt = (uKetMin.toFixed(1) === uKetMax.toFixed(1)) ? uKetMin.toFixed(1) : uKetMin.toFixed(1) + " - " + uKetMax.toFixed(1);
     
     const mLMetMin = doseMetMin / 10;
     const mLMetMax = doseMetMax / 10;
@@ -1013,24 +1024,33 @@ function calcular(resetInfusao) {
         
         document.getElementById('valInfusao').innerText = vazaoInfusaoCont.toFixed(1);
         document.getElementById('rotVazaoInf').innerText = vazaoInfusaoCont.toFixed(1);
+
+        const alertaFaixaLido = document.getElementById('alertaFaixaLidoDex');
+        if (pesoAjustado < 60 || pesoAjustado > 90) {
+            alertaFaixaLido.innerText = "⚠️ Dose fixa da Infusão Lido-Dex validada para peso ajustado entre 60-90 kg. Peso ajustado atual: " + pesoAjustado.toFixed(1) + " kg — conferir a vazão manualmente para evitar erros.";
+            alertaFaixaLido.style.display = 'block';
+        } else {
+            alertaFaixaLido.style.display = 'none';
+        }
     } else if (tipoInfusaoAtual === 'LIDOKETODEX') {
         linhaInf.style.display = 'table-row';
         passoInfRoteiro.style.display = 'block';
         descDesmameBomba.style.display = 'inline';
 
         document.getElementById('nomeInfusao').innerText = "Infusão Lido-Keto-Dex";
-        document.getElementById('descInfusao').innerText = "Lido 300mg (15mL) + Dex 100mcg (1mL) + Ketamina 75mg (1,5mL) + SF 32,5mL (Total: 50mL)";
+        document.getElementById('descInfusao').innerText = "Lido 200mg (10mL) + Dex 100mcg (1mL) + Ketamina 75mg (1,5mL) + SF q.s.p. 50mL (Total: 50mL)";
         document.getElementById('desmameInfusao').innerText = "Desligar no início do fechamento da aponeurose (30-60 min antes do final da cirurgia)";
-        document.getElementById('regraInfusao').innerText = "PI / 4,5";
-        document.getElementById('pesoUsadoInfusao').innerText = pesoIdeal.toFixed(1) + " kg";
-        vazaoInfusaoCont = pesoIdeal / 4.5;
+        document.getElementById('regraInfusao').innerText = "Dose fixa sugerida";
+        document.getElementById('pesoUsadoInfusao').innerText = "--";
 
-        document.getElementById('valInfusao').innerText = vazaoInfusaoCont.toFixed(1);
-        document.getElementById('rotVazaoInf').innerText = vazaoInfusaoCont.toFixed(1);
+        document.getElementById('valInfusao').innerText = "10 - 12";
+        document.getElementById('rotVazaoInf').innerText = "10 - 12";
+        document.getElementById('alertaFaixaLidoDex').style.display = 'none';
     } else {
         linhaInf.style.display = 'none';
         passoInfRoteiro.style.display = 'none';
         descDesmameBomba.style.display = 'none';
+        document.getElementById('alertaFaixaLidoDex').style.display = 'none';
     }
 
     const uMorf = (doseMorf / 10) * 100; // Metadona pediátrica: unidades (U) de seringa de insulina, concentração 10 mg/mL
@@ -1038,11 +1058,11 @@ function calcular(resetInfusao) {
     document.getElementById('doseLido').innerText = doseLidoMin.toFixed(1) + " - " + doseLidoMax.toFixed(1);
     document.getElementById('uLido').innerText = mLidoMinArredondado + " - " + mLidoMaxArredondado;
 
-    document.getElementById('doseDex').innerText = doseDex.toFixed(1);
-    document.getElementById('uDex').innerText = uDex.toFixed(1);
+    document.getElementById('doseDex').innerText = doseDexTxt;
+    document.getElementById('uDex').innerText = uDexTxt;
 
-    document.getElementById('doseKet').innerText = doseKet.toFixed(1);
-    document.getElementById('uKet').innerText = uKet.toFixed(1);
+    document.getElementById('doseKet').innerText = doseKetTxt;
+    document.getElementById('uKet').innerText = uKetTxt;
 
     document.getElementById('doseMet').innerText = doseMetMin.toFixed(1) + " - " + doseMetMax.toFixed(1);
     document.getElementById('uMet').innerText = mLMetMin.toFixed(1) + " - " + mLMetMax.toFixed(1);
@@ -1054,8 +1074,8 @@ function calcular(resetInfusao) {
     document.getElementById('rotProp').innerText = Math.round(dosePropFinal);
     document.getElementById('rotRoc').innerText = Math.round(doseRocFinal);
     
-    document.getElementById('rotDex').innerText = doseDex.toFixed(1);
-    document.getElementById('rotKet').innerText = doseKet.toFixed(1);
+    document.getElementById('rotDex').innerText = doseDexTxt;
+    document.getElementById('rotKet').innerText = doseKetTxt;
     document.getElementById('rotMet').innerText = mLMetMin.toFixed(1) + " a " + mLMetMax.toFixed(1);
 
     const descIndPadrao = document.getElementById('descIndPadrao');
@@ -1066,8 +1086,8 @@ function calcular(resetInfusao) {
         descIndPadrao.style.display = 'none';
         descIndPediatrica.style.display = 'inline';
         timelineItemPos2.style.display = 'none';
-        document.getElementById('rotDexPed').innerText = doseDex.toFixed(1);
-        document.getElementById('rotKetPed').innerText = doseKet.toFixed(1);
+        document.getElementById('rotDexPed').innerText = doseDexTxt;
+        document.getElementById('rotKetPed').innerText = doseKetTxt;
         document.getElementById('rotMorfPed').innerText = doseMorf.toFixed(2);
     } else {
         descIndPadrao.style.display = 'inline';
